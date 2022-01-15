@@ -160,7 +160,7 @@ public class Robot extends TimedRobot {
     }
 
     robotDrive.arcadeDrive(
-      controlInputs.driveStickX*forward_power,
+      -controlInputs.driveStickX*forward_power,
       controlInputs.driveStickY*turn_power);
   
   }
