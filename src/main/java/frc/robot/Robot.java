@@ -43,6 +43,7 @@ public class Robot extends TimedRobot {
   private final MotorControllerGroup driveRight = new MotorControllerGroup(driveFrontRight, driveRearRight);
 
   private final TalonSRX intakeBeltTalon = new TalonSRX(6);
+  private final TalonSRX transferBeltTalon = new TalonSRX(7);
 
   private final CANSparkMax shooterMotor = new CANSparkMax(5, MotorType.kBrushless);
   private final RelativeEncoder shooterMotorEncoder = shooterMotor.getEncoder();
@@ -171,8 +172,12 @@ public class Robot extends TimedRobot {
       else
       {
         double motorVelocity = shooterMotorEncoder.getVelocity();
-        //if the motorVelocity is at the target, turn on the motor to transfer the cargo
-        //from intake to shooter 
+        double velocityTolerance = 5;
+        if ( (motorVelocity > targetVelocity - velocityTolerance)  &&
+             (motorVelocity > targetVelocity + velocityTolerance) )
+        {
+          transferBeltTalon.set(ControlMode.PercentOutput, 1);
+        }
       }
     }
     else
@@ -182,6 +187,7 @@ public class Robot extends TimedRobot {
         shooterMotorPIDController.setReference(0, ControlType.kVelocity);
         shotInProgress = false;
       }
+      transferBeltTalon.set(ControlMode.PercentOutput, 0);
     }
 
     robotDrive.arcadeDrive(
