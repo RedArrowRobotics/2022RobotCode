@@ -56,6 +56,7 @@ public class Robot extends TimedRobot {
 
   private final Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
+  private boolean shotInProgress = false;
   
   //private final Joystick driveStickLeft = new Joystick(0);
     
@@ -151,12 +152,36 @@ public class Robot extends TimedRobot {
 
     if ( controlInputs.shootLow || controlInputs.shootHigh)
     {
-      shooterMotorPIDController.setReference(5000, ControlType.kVelocity);
-      shooterMotorEncoder.getVelocity();
+      final double lowShotTargetVelocity = 1000;
+      final double highShotTargetVelocity = 5000;
+      double targetVelocity = 0;
+      if (controlInputs.shootLow)
+      {
+        targetVelocity = lowShotTargetVelocity;
+      }
+      if (controlInputs.shootHigh)
+      {
+        targetVelocity = highShotTargetVelocity;
+      }
+      
+      if (!shotInProgress)
+      {
+        shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity);
+      }
+      else
+      {
+        double motorVelocity = shooterMotorEncoder.getVelocity();
+        //if the motorVelocity is at the target, turn on the motor to transfer the cargo
+        //from intake to shooter 
+      }
     }
     else
     {
-      shooterMotorPIDController.setReference(0, ControlType.kVelocity);
+      if (shotInProgress)
+      {
+        shooterMotorPIDController.setReference(0, ControlType.kVelocity);
+        shotInProgress = false;
+      }
     }
 
     robotDrive.arcadeDrive(
