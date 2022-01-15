@@ -8,7 +8,7 @@ public class ControlInputs {
     private final int mechanismStick1DeviceId = 1;
     //private final int mechanismStick2DeviceId = 2;
     
-    private final int intakeDriveButtonId = 10;
+    private final int intakeBeltButtonId = 10;
     private final int lowShooterButtonId = 11;
     private final int highShooterButtonId = 12;
 
@@ -17,7 +17,7 @@ public class ControlInputs {
     //private final Joystick mechanismStick2 = new Joystick(mechanismStick2DeviceId);
 
     public boolean deployIntake = false;
-    public boolean driveIntake = false;
+    public boolean runIntake = false;
     public boolean shootLow = false;
     public boolean shootHigh = false;
     public boolean runCompressor = false;
@@ -32,7 +32,7 @@ public class ControlInputs {
         runCompressor = driveStick.getZ() > 0.0;
 
         deployIntake = mechanismStick1.getX() > 0.0;
-        driveIntake = mechanismStick1.getRawButton(intakeDriveButtonId);
+        runIntake = mechanismStick1.getRawButton(intakeBeltButtonId);
         shootLow = mechanismStick1.getRawButton(lowShooterButtonId);
         shootHigh = mechanismStick1.getRawButton(highShooterButtonId);
     }

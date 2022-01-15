@@ -42,8 +42,9 @@ public class Robot extends TimedRobot {
   private final CANSparkMax driveRearRight = new CANSparkMax(4, MotorType.kBrushless);
   private final MotorControllerGroup driveRight = new MotorControllerGroup(driveFrontRight, driveRearRight);
 
-  private final TalonSRX intakeBeltTalon = new TalonSRX(6);
-  private final TalonSRX transferBeltTalon = new TalonSRX(7);
+  private final TalonSRX intakeRollerTalon = new TalonSRX(6);
+  private final TalonSRX intakeBeltTalon = new TalonSRX(7);
+  private final TalonSRX transferBeltTalon = new TalonSRX(8);
 
   private final CANSparkMax shooterMotor = new CANSparkMax(5, MotorType.kBrushless);
   private final RelativeEncoder shooterMotorEncoder = shooterMotor.getEncoder();
@@ -148,8 +149,10 @@ public class Robot extends TimedRobot {
       DoubleSolenoid.Value.kForward : 
       DoubleSolenoid.Value.kReverse);
 
+    intakeRollerTalon.set(
+      ControlMode.PercentOutput, controlInputs.runIntake ? 1 : 0);
     intakeBeltTalon.set(
-      ControlMode.PercentOutput, controlInputs.runIntakeBelts ? 1 : 0);
+      ControlMode.PercentOutput, controlInputs.runIntake ? 1 : 0);
 
     if ( controlInputs.shootLow || controlInputs.shootHigh)
     {
@@ -176,6 +179,7 @@ public class Robot extends TimedRobot {
         if ( (motorVelocity > targetVelocity - velocityTolerance)  &&
              (motorVelocity > targetVelocity + velocityTolerance) )
         {
+          intakeBeltTalon.set(ControlMode.PercentOutput, 1);
           transferBeltTalon.set(ControlMode.PercentOutput, 1);
         }
       }
@@ -187,6 +191,7 @@ public class Robot extends TimedRobot {
         shooterMotorPIDController.setReference(0, ControlType.kVelocity);
         shotInProgress = false;
       }
+      intakeBeltTalon.set(ControlMode.PercentOutput, 0);
       transferBeltTalon.set(ControlMode.PercentOutput, 0);
     }
 
