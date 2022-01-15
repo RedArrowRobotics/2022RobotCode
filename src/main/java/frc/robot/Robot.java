@@ -148,7 +148,7 @@ public class Robot extends TimedRobot {
       DoubleSolenoid.Value.kReverse);
 
     intakeBeltTalon.set(
-      ControlMode.PercentOutput, controlInputs.driveIntake ? 1 : 0);
+      ControlMode.PercentOutput, controlInputs.runIntakeBelts ? 1 : 0);
 
     if ( controlInputs.shootLow || controlInputs.shootHigh)
     {
