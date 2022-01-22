@@ -135,24 +135,18 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
-    //double driveStickX = driveStickLeft.getX();
-    //double driveStickY = driveStickLeft.getY();
-            
+        
     double forward_power = 1.0;
     double turn_power = 1.0;
 
-    //robotDrive.arcadeDrive(-driveStickY*forward_power,(driveStickX)*turn_power);
-    
-    intakeArmControl.set(
+    DoubleSolenoid.Value solenoidPosition = 
       controlInputs.deployIntake ? 
       DoubleSolenoid.Value.kForward : 
-      DoubleSolenoid.Value.kReverse);
-
-    intakeRollerTalon.set(
-      ControlMode.PercentOutput, controlInputs.runIntake ? 1 : 0);
-    intakeBeltTalon.set(
-      ControlMode.PercentOutput, controlInputs.runIntake ? 1 : 0);
+      DoubleSolenoid.Value.kReverse;
+  
+    Double intakeRollerMotorPower = controlInputs.runIntake ? 1.0 : 0.0;
+    Double intakeBeltMotorPower = controlInputs.runIntake ? 1.0 : 0.0;
+    Double transferBeltMotorPower = 0.0;
 
     if ( controlInputs.shootLow || controlInputs.shootHigh)
     {
@@ -180,7 +174,7 @@ public class Robot extends TimedRobot {
              (motorVelocity > targetVelocity + velocityTolerance) )
         {
           intakeBeltTalon.set(ControlMode.PercentOutput, 1);
-          transferBeltTalon.set(ControlMode.PercentOutput, 1);
+          transferBeltMotorPower = 1.0;
         }
       }
     }
@@ -192,13 +186,18 @@ public class Robot extends TimedRobot {
         shotInProgress = false;
       }
       intakeBeltTalon.set(ControlMode.PercentOutput, 0);
-      transferBeltTalon.set(ControlMode.PercentOutput, 0);
     }
 
     robotDrive.arcadeDrive(
       -controlInputs.driveStickX*forward_power,
       controlInputs.driveStickY*turn_power);
   
+    intakeArmControl.set(solenoidPosition);
+
+    intakeRollerTalon.set(ControlMode.PercentOutput, intakeRollerMotorPower);
+    intakeBeltTalon.set(ControlMode.PercentOutput, intakeBeltMotorPower);
+    transferBeltTalon.set(ControlMode.PercentOutput, transferBeltMotorPower);
+
   }
 
   /** This function is called once when the robot is disabled. */
