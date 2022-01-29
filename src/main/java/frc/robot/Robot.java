@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   private final CANSparkMax driveRearRight = new CANSparkMax(4, MotorType.kBrushless);
   private final MotorControllerGroup driveRight = new MotorControllerGroup(driveFrontRight, driveRearRight);
 
-  private final TalonSRX intakeRollerTalon = new TalonSRX(6);
+  private final CANSparkMax intakeRollerMotor = new CANSparkMax(6, MotorType.kBrushless);
   private final TalonSRX intakeBeltTalon = new TalonSRX(7);
   private final TalonSRX transferBeltTalon = new TalonSRX(8);
 
@@ -71,6 +71,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    String autoMode = SmartDashboard.getString("DB/Strings 0", "0");
     driveFrontRight.setInverted(true);
     driveRearRight.setInverted(true);
   }
@@ -84,15 +85,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    controlInputs.readControls();
-    if (controlInputs.runCompressor)
-    {
-      compressor.enableDigital();
-    }
-    else
-    {
-      compressor.disable();
-    }
+    
   }
 
   /**
@@ -135,7 +128,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-        
+    controlInputs.readControls();
+    
     double forward_power = 1.0;
     double turn_power = 1.0;
 
@@ -150,7 +144,7 @@ public class Robot extends TimedRobot {
 
     if ( controlInputs.shootLow || controlInputs.shootHigh)
     {
-      final double lowShotTargetVelocity = 1000;
+      final double lowShotTargetVelocity = 3000;
       final double highShotTargetVelocity = 5000;
       double targetVelocity = 0;
       if (controlInputs.shootLow)
@@ -171,9 +165,8 @@ public class Robot extends TimedRobot {
         double motorVelocity = shooterMotorEncoder.getVelocity();
         double velocityTolerance = 5;
         if ( (motorVelocity > targetVelocity - velocityTolerance)  &&
-             (motorVelocity > targetVelocity + velocityTolerance) )
+             (motorVelocity < targetVelocity + velocityTolerance) )
         {
-          intakeBeltTalon.set(ControlMode.PercentOutput, 1);
           transferBeltMotorPower = 1.0;
         }
       }
@@ -194,7 +187,7 @@ public class Robot extends TimedRobot {
   
     intakeArmControl.set(solenoidPosition);
 
-    intakeRollerTalon.set(ControlMode.PercentOutput, intakeRollerMotorPower);
+    intakeRollerMotor.set(intakeRollerMotorPower);
     intakeBeltTalon.set(ControlMode.PercentOutput, intakeBeltMotorPower);
     transferBeltTalon.set(ControlMode.PercentOutput, transferBeltMotorPower);
 
@@ -206,7 +199,17 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    controlInputs.readControls();
+    if (controlInputs.runCompressor)
+    {
+      compressor.enableDigital();
+    }
+    else
+    {
+      compressor.disable();
+    }
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override
