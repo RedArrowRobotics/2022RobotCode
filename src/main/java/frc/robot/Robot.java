@@ -55,7 +55,7 @@ public class Robot extends TimedRobot {
   private final DifferentialDrive robotDrive = new DifferentialDrive(driveLeft, driveRight);
 
   private final ControlInputs controlInputs = new ControlInputs();
-
+  private final SensorInputs sensorInputs = new SensorInputs();
   private final Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
   private boolean shotInProgress = false;
@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-    String autoMode = SmartDashboard.getString("DB/Strings 0", "0");
+    //String autoMode = SmartDashboard.getString("DB/Strings 0", "0");
     driveFrontRight.setInverted(true);
     driveRearRight.setInverted(true);
   }
@@ -129,7 +129,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     controlInputs.readControls();
-    
+    sensorInputs.readSensors();
+
     double forward_power = 1.0;
     double turn_power = 1.0;
 

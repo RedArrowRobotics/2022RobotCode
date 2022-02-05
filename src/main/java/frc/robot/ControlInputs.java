@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class ControlInputs {
     
     private final int driveStickDeviceId = 0;
-    private final int mechanismStick1DeviceId = 1;
+    //private final int mechanismStick1DeviceId = 1;
     private final int mechanismStick2DeviceId = 2;
     
     private final int intakeBeltButtonId = 10;
@@ -13,7 +13,7 @@ public class ControlInputs {
     private final int highShooterButtonId = 12;
 
     private final Joystick driveStick = new Joystick(driveStickDeviceId);    
-    private final Joystick mechanismStick1 = new Joystick(mechanismStick1DeviceId);
+    //private final Joystick mechanismStick1 = new Joystick(mechanismStick1DeviceId);
     private final Joystick mechanismStick2 = new Joystick(mechanismStick2DeviceId);
 
     public boolean deployIntake = false;
