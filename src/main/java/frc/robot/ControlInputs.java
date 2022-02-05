@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class ControlInputs {
     
     private final int driveStickDeviceId = 0;
-    //private final int mechanismStick1DeviceId = 1;
+    private final int mechanismStick1DeviceId = 1;
     private final int mechanismStick2DeviceId = 2;
     
     private final int intakeBeltButtonId = 10;
@@ -13,7 +13,7 @@ public class ControlInputs {
     private final int highShooterButtonId = 12;
 
     private final Joystick driveStick = new Joystick(driveStickDeviceId);    
-    //private final Joystick mechanismStick1 = new Joystick(mechanismStick1DeviceId);
+    private final Joystick mechanismStick1 = new Joystick(mechanismStick1DeviceId);
     private final Joystick mechanismStick2 = new Joystick(mechanismStick2DeviceId);
 
     public boolean deployIntake = false;
@@ -23,6 +23,8 @@ public class ControlInputs {
     public boolean runCompressor = false;
     public double driveStickX = 0.0;
     public double driveStickY = 0.0;
+    public boolean switchToBasicComponentControl = false;
+    public boolean switchToSensorComponentControl = false;
 
     public final void readControls()
     {
@@ -35,5 +37,8 @@ public class ControlInputs {
         runIntake = mechanismStick2.getRawButton(intakeBeltButtonId);
         shootLow = mechanismStick2.getRawButton(lowShooterButtonId);
         shootHigh = mechanismStick2.getRawButton(highShooterButtonId);
+
+        switchToBasicComponentControl = mechanismStick1.getRawButton(1);
+        switchToSensorComponentControl = mechanismStick1.getRawButton(12);
     }
 }

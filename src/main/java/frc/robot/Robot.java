@@ -10,17 +10,14 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.ComponentsControl.ComponentsControlV1;
+import frc.robot.ComponentsControl.ComponentsControl;
+import frc.robot.ComponentsControl.ComponentsControlV2;
+
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -42,26 +39,14 @@ public class Robot extends TimedRobot {
   private final CANSparkMax driveRearRight = new CANSparkMax(4, MotorType.kBrushless);
   private final MotorControllerGroup driveRight = new MotorControllerGroup(driveFrontRight, driveRearRight);
 
-  private final CANSparkMax intakeRollerMotor = new CANSparkMax(6, MotorType.kBrushless);
-  private final TalonSRX intakeBeltTalon = new TalonSRX(7);
-  private final TalonSRX transferBeltTalon = new TalonSRX(8);
-
-  private final CANSparkMax shooterMotor = new CANSparkMax(5, MotorType.kBrushless);
-  private final RelativeEncoder shooterMotorEncoder = shooterMotor.getEncoder();
-  private final SparkMaxPIDController shooterMotorPIDController = shooterMotor.getPIDController();
-
-  private final DoubleSolenoid intakeArmControl = new DoubleSolenoid(0, PneumaticsModuleType.CTREPCM, 3, 4);
-
   private final DifferentialDrive robotDrive = new DifferentialDrive(driveLeft, driveRight);
 
   private final ControlInputs controlInputs = new ControlInputs();
   private final SensorInputs sensorInputs = new SensorInputs();
   private final Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
-  private boolean shotInProgress = false;
-  
-  //private final Joystick driveStickLeft = new Joystick(0);
-    
+  private ComponentsControl componentsControl;
+      
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -74,6 +59,7 @@ public class Robot extends TimedRobot {
     //String autoMode = SmartDashboard.getString("DB/Strings 0", "0");
     driveFrontRight.setInverted(true);
     driveRearRight.setInverted(true);
+    componentsControl = new ComponentsControlV1();
   }
 
   /**
@@ -131,66 +117,23 @@ public class Robot extends TimedRobot {
     controlInputs.readControls();
     sensorInputs.readSensors();
 
+    if (controlInputs.switchToBasicComponentControl)
+    {
+      componentsControl = new ComponentsControlV1();
+    }
+    if (controlInputs.switchToSensorComponentControl)
+    {
+      componentsControl = new ComponentsControlV2();
+    }
+
     double forward_power = 1.0;
     double turn_power = 1.0;
-
-    DoubleSolenoid.Value solenoidPosition = 
-      controlInputs.deployIntake ? 
-      DoubleSolenoid.Value.kForward : 
-      DoubleSolenoid.Value.kReverse;
-  
-    Double intakeRollerMotorPower = controlInputs.runIntake ? 1.0 : 0.0;
-    Double intakeBeltMotorPower = controlInputs.runIntake ? 1.0 : 0.0;
-    Double transferBeltMotorPower = 0.0;
-
-    if ( controlInputs.shootLow || controlInputs.shootHigh)
-    {
-      final double lowShotTargetVelocity = 3000;
-      final double highShotTargetVelocity = 5000;
-      double targetVelocity = 0;
-      if (controlInputs.shootLow)
-      {
-        targetVelocity = lowShotTargetVelocity;
-      }
-      if (controlInputs.shootHigh)
-      {
-        targetVelocity = highShotTargetVelocity;
-      }
-      
-      if (!shotInProgress)
-      {
-        shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity);
-      }
-      else
-      {
-        double motorVelocity = shooterMotorEncoder.getVelocity();
-        double velocityTolerance = 5;
-        if ( (motorVelocity > targetVelocity - velocityTolerance)  &&
-             (motorVelocity < targetVelocity + velocityTolerance) )
-        {
-          transferBeltMotorPower = 1.0;
-        }
-      }
-    }
-    else
-    {
-      if (shotInProgress)
-      {
-        shooterMotorPIDController.setReference(0, ControlType.kVelocity);
-        shotInProgress = false;
-      }
-      intakeBeltTalon.set(ControlMode.PercentOutput, 0);
-    }
 
     robotDrive.arcadeDrive(
       -controlInputs.driveStickX*forward_power,
       controlInputs.driveStickY*turn_power);
   
-    intakeArmControl.set(solenoidPosition);
-
-    intakeRollerMotor.set(intakeRollerMotorPower);
-    intakeBeltTalon.set(ControlMode.PercentOutput, intakeBeltMotorPower);
-    transferBeltTalon.set(ControlMode.PercentOutput, transferBeltMotorPower);
+    componentsControl.runComponents(controlInputs, sensorInputs);
 
   }
 
