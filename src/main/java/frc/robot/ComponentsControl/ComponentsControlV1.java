@@ -2,7 +2,8 @@ package frc.robot.ComponentsControl;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax.ControlType;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.ControlInputs;
 import frc.robot.SensorInputs;
 
@@ -11,19 +12,14 @@ public class ComponentsControlV1 extends ComponentsControl {
     @Override
     public void runComponents(ControlInputs controlInputs, SensorInputs sensorInputs) {
         
-        DoubleSolenoid.Value solenoidPosition = 
-        controlInputs.deployIntake ? 
-        DoubleSolenoid.Value.kForward : 
-        DoubleSolenoid.Value.kReverse;
-    
-        Double intakeRollerMotorPower = controlInputs.runIntake ? 1.0 : 0.0;
+        Double intakeRollerMotorPower = controlInputs.runIntake ? -1.0 : 0.0;
         Double intakeBeltMotorPower = controlInputs.runIntake ? 1.0 : 0.0;
         Double transferBeltMotorPower = 0.0;
 
         if ( controlInputs.shootLow || controlInputs.shootHigh)
         {
             final double lowShotTargetVelocity = 3000;
-            final double highShotTargetVelocity = 5000;
+            final double highShotTargetVelocity = 5700;
             double targetVelocity = 0;
             if (controlInputs.shootLow)
             {
@@ -36,29 +32,39 @@ public class ComponentsControlV1 extends ComponentsControl {
             
             if (!shotInProgress)
             {
-                shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity);
+                shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity, 0);
+                shotInProgress = true;
+                reallyShoot = false;
             }
             else
             {
                 double motorVelocity = shooterMotorEncoder.getVelocity();
-                double velocityTolerance = 5;
-                if ( (motorVelocity > targetVelocity - velocityTolerance)  &&
+                SmartDashboard.putNumber("Shooter Motor Vel", motorVelocity);
+                double velocityTolerance = 50;
+                if (motorVelocity >= targetVelocity)
+                {
+                    reallyShoot = true;
+                }
+                /*if ( (motorVelocity > targetVelocity - velocityTolerance)  &&
                     (motorVelocity < targetVelocity + velocityTolerance) )
                 {
-                transferBeltMotorPower = 1.0;
-                }
+                    transferBeltMotorPower = 1.0;
+                }*/
             }
         }
         else
         {
-        if (shotInProgress)
-        {
-            shooterMotorPIDController.setReference(0, ControlType.kVelocity);
-            shotInProgress = false;
+            if (shotInProgress)
+            {
+                shotInProgress = false;
+                reallyShoot = false;
+            }
+            shooterMotorPIDController.setReference(0, ControlType.kVelocity, 0);                
         }
-            intakeBeltMotor.set(ControlMode.PercentOutput, 0);
-        }
-        intakeArmControl.set(solenoidPosition);
+
+        transferBeltMotorPower = reallyShoot ? 1.0 : 0.0;
+
+        intakeArmControl.set(controlInputs.deployIntake);
 
         intakeRollerMotor.set(intakeRollerMotorPower);
         intakeBeltMotor.set(ControlMode.PercentOutput, intakeBeltMotorPower);

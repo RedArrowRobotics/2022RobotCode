@@ -2,7 +2,6 @@ package frc.robot.ComponentsControl;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax.ControlType;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.ControlInputs;
 import frc.robot.SensorInputs;
 
@@ -10,11 +9,7 @@ public class ComponentsControlV2 extends ComponentsControl {
 
     @Override
     public void runComponents(ControlInputs controlInputs, SensorInputs sensorInputs) {
-        DoubleSolenoid.Value solenoidPosition = 
-        controlInputs.deployIntake ? 
-        DoubleSolenoid.Value.kForward : 
-        DoubleSolenoid.Value.kReverse;
-    
+        
         Double intakeRollerMotorPower = controlInputs.runIntake ? 1.0 : 0.0;
         Double intakeBeltMotorPower = 0.0;
         Double transferBeltMotorPower = 0.0;
@@ -52,7 +47,7 @@ public class ComponentsControlV2 extends ComponentsControl {
             
             if (!shotInProgress)
             {
-                shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity);
+                shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity, 0);
             }
             else
             {
@@ -61,20 +56,20 @@ public class ComponentsControlV2 extends ComponentsControl {
                 if ( (motorVelocity > targetVelocity - velocityTolerance)  &&
                     (motorVelocity < targetVelocity + velocityTolerance) )
                 {
-                transferBeltMotorPower = 1.0;
+                    transferBeltMotorPower = 1.0;
                 }
             }
         }
         else
         {
-        if (shotInProgress)
-        {
-            shooterMotorPIDController.setReference(0, ControlType.kVelocity);
-            shotInProgress = false;
+            if (shotInProgress)
+            {
+                shotInProgress = false;
+            }
+            shooterMotorPIDController.setReference(0, ControlType.kVelocity, 0);
+            intakeBeltMotorPower = 0.0;
         }
-            intakeBeltMotor.set(ControlMode.PercentOutput, 0);
-        }
-        intakeArmControl.set(solenoidPosition);
+        intakeArmControl.set(controlInputs.deployIntake);
 
         intakeRollerMotor.set(intakeRollerMotorPower);
         intakeBeltMotor.set(ControlMode.PercentOutput, intakeBeltMotorPower);

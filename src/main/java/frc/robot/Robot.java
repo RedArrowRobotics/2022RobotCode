@@ -14,6 +14,8 @@ import frc.robot.ComponentsControl.ComponentsControlV1;
 import frc.robot.ComponentsControl.ComponentsControl;
 import frc.robot.ComponentsControl.ComponentsControlV2;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Compressor;
@@ -57,8 +59,8 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
     //String autoMode = SmartDashboard.getString("DB/Strings 0", "0");
-    driveFrontRight.setInverted(true);
-    driveRearRight.setInverted(true);
+    driveFrontRight.setInverted(false);
+    driveRearRight.setInverted(false);
     componentsControl = new ComponentsControlV1();
   }
 
@@ -135,6 +137,15 @@ public class Robot extends TimedRobot {
   
     componentsControl.runComponents(controlInputs, sensorInputs);
 
+    if (controlInputs.runCompressor)
+    {
+      compressor.enableDigital();
+    }
+    else
+    {
+      compressor.disable();
+    }
+
   }
 
   /** This function is called once when the robot is disabled. */
@@ -144,7 +155,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-    controlInputs.readControls();
+    //controlInputs.readControls();
     if (controlInputs.runCompressor)
     {
       compressor.enableDigital();
