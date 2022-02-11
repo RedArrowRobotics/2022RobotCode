@@ -35,13 +35,14 @@ public class Robot extends TimedRobot {
 
   private final CANSparkMax driveFrontLeft = new CANSparkMax(1, MotorType.kBrushless);
   private final CANSparkMax driveRearLeft = new CANSparkMax(2, MotorType.kBrushless);
-  private final MotorControllerGroup driveLeft = new MotorControllerGroup(driveFrontLeft, driveRearLeft);
+  //private final MotorControllerGroup driveLeft = new MotorControllerGroup(driveFrontLeft, driveRearLeft);
 
   private final CANSparkMax driveFrontRight = new CANSparkMax(3, MotorType.kBrushless);
   private final CANSparkMax driveRearRight = new CANSparkMax(4, MotorType.kBrushless);
-  private final MotorControllerGroup driveRight = new MotorControllerGroup(driveFrontRight, driveRearRight);
+  //private final MotorControllerGroup driveRight = new MotorControllerGroup(driveFrontRight, driveRearRight);
 
-  private final DifferentialDrive robotDrive = new DifferentialDrive(driveLeft, driveRight);
+  //private final DifferentialDrive robotDrive = new DifferentialDrive(driveLeft, driveRight);
+  private final DifferentialDrive robotDrive = new DifferentialDrive(driveFrontLeft, driveFrontRight);
 
   private final ControlInputs controlInputs = new ControlInputs();
   private final SensorInputs sensorInputs = new SensorInputs();
@@ -59,8 +60,11 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
     //String autoMode = SmartDashboard.getString("DB/Strings 0", "0");
-    driveFrontRight.setInverted(false);
-    driveRearRight.setInverted(false);
+    driveRearRight.follow(driveFrontRight, false);
+    driveRearLeft.follow(driveFrontLeft, false);
+
+    //driveFrontRight.setInverted(true);
+    //driveFrontLeft.setInverted(true);
     componentsControl = new ComponentsControlV1();
   }
 

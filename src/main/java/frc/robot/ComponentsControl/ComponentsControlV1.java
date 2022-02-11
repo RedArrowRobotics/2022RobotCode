@@ -19,7 +19,7 @@ public class ComponentsControlV1 extends ComponentsControl {
         if ( controlInputs.shootLow || controlInputs.shootHigh)
         {
             final double lowShotTargetVelocity = 3000;
-            final double highShotTargetVelocity = 5700;
+            final double highShotTargetVelocity = 8000;
             double targetVelocity = 0;
             if (controlInputs.shootLow)
             {
@@ -41,10 +41,14 @@ public class ComponentsControlV1 extends ComponentsControl {
                 double motorVelocity = shooterMotorEncoder.getVelocity();
                 SmartDashboard.putNumber("Shooter Motor Vel", motorVelocity);
                 double velocityTolerance = 50;
-                if (motorVelocity >= targetVelocity)
+                if (motorVelocity >= targetVelocity - velocityTolerance)
                 {
                     reallyShoot = true;
                 }
+                /*if (motorVelocity >= targetVelocity)
+                {
+                    reallyShoot = true;
+                }*/
                 /*if ( (motorVelocity > targetVelocity - velocityTolerance)  &&
                     (motorVelocity < targetVelocity + velocityTolerance) )
                 {
@@ -59,7 +63,8 @@ public class ComponentsControlV1 extends ComponentsControl {
                 shotInProgress = false;
                 reallyShoot = false;
             }
-            shooterMotorPIDController.setReference(0, ControlType.kVelocity, 0);                
+            shooterMotor.set(0.0);
+            //shooterMotorPIDController.setReference(0, ControlType.kVelocity, 0);                
         }
 
         transferBeltMotorPower = reallyShoot ? 1.0 : 0.0;
