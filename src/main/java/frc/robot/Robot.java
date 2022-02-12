@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.ComponentsControl.ComponentsControlV1;
 import frc.robot.ComponentsControl.ComponentsControl;
+import frc.robot.ComponentsControl.ComponentsControlPIDTest;
 import frc.robot.ComponentsControl.ComponentsControlV2;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -129,7 +130,7 @@ public class Robot extends TimedRobot {
     }
     if (controlInputs.switchToSensorComponentControl)
     {
-      componentsControl = new ComponentsControlV2();
+      componentsControl = new ComponentsControlPIDTest();
     }
 
     double forward_power = 1.0;
@@ -158,17 +159,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {
-    //controlInputs.readControls();
-    if (controlInputs.runCompressor)
-    {
-      compressor.enableDigital();
-    }
-    else
-    {
-      compressor.disable();
-    }
-  }
+  public void disabledPeriodic() {}
 
   /** This function is called once when test mode is enabled. */
   @Override

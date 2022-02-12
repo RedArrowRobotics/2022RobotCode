@@ -25,5 +25,7 @@ public abstract class ComponentsControl {
 
     protected boolean shotInProgress = false;
     protected boolean reallyShoot = false;
+    protected boolean waitForSpinUp = false;
+    protected Integer shooterThresholdCount = 0;
     public abstract void runComponents(ControlInputs controlInputs, SensorInputs sensorInputs);
 }

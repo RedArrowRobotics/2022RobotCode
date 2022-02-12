@@ -8,6 +8,9 @@ public class ControlInputs {
     private final int mechanismStick1DeviceId = 1;
     private final int mechanismStick2DeviceId = 2;
     
+    private final int testRunShooterButtonId = 1;
+    private final int testtransferBeltButtonId = 2;
+
     private final int intakeBeltButtonId = 10;
     private final int lowShooterButtonId = 11;
     private final int highShooterButtonId = 12;
@@ -25,6 +28,8 @@ public class ControlInputs {
     public double driveStickY = 0.0;
     public boolean switchToBasicComponentControl = false;
     public boolean switchToSensorComponentControl = false;
+    public boolean testShooter = false;
+    public boolean runTransferBelt = false;
 
     public final void readControls()
     {
@@ -40,5 +45,8 @@ public class ControlInputs {
 
         switchToBasicComponentControl = mechanismStick1.getRawButton(1);
         switchToSensorComponentControl = mechanismStick1.getRawButton(12);
+
+        testShooter = mechanismStick2.getRawButton(testRunShooterButtonId);
+        runTransferBelt = mechanismStick2.getRawButton(testtransferBeltButtonId);
     }
 }
