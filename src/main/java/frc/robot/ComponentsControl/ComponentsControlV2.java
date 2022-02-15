@@ -2,14 +2,15 @@ package frc.robot.ComponentsControl;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax.ControlType;
+import frc.robot.Components;
 import frc.robot.ControlInputs;
 import frc.robot.SensorInputs;
 
 public class ComponentsControlV2 extends ComponentsControl {
 
     @Override
-    public void runComponents(ControlInputs controlInputs, SensorInputs sensorInputs) {
-        
+    public void runComponents(Components components, ControlInputs controlInputs, SensorInputs sensorInputs) 
+    {    
         Double intakeRollerMotorPower = controlInputs.runIntake ? 1.0 : 0.0;
         Double intakeBeltMotorPower = 0.0;
         Double transferBeltMotorPower = 0.0;
@@ -47,11 +48,11 @@ public class ComponentsControlV2 extends ComponentsControl {
             
             if (!shotInProgress)
             {
-                shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity, 0);
+                components.shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity, 0);
             }
             else
             {
-                double motorVelocity = shooterMotorEncoder.getVelocity();
+                double motorVelocity = components.shooterMotorEncoder.getVelocity();
                 double velocityTolerance = 5;
                 if ( (motorVelocity > targetVelocity - velocityTolerance)  &&
                     (motorVelocity < targetVelocity + velocityTolerance) )
@@ -66,14 +67,14 @@ public class ComponentsControlV2 extends ComponentsControl {
             {
                 shotInProgress = false;
             }
-            shooterMotorPIDController.setReference(0, ControlType.kVelocity, 0);
+            components.shooterMotorPIDController.setReference(0, ControlType.kVelocity, 0);
             intakeBeltMotorPower = 0.0;
         }
-        intakeArmControl.set(controlInputs.deployIntake);
+        components.intakeArmControl.set(controlInputs.deployIntake);
 
-        intakeRollerMotor.set(intakeRollerMotorPower);
-        intakeBeltMotor.set(ControlMode.PercentOutput, intakeBeltMotorPower);
-        transferBeltMotor.set(ControlMode.PercentOutput, transferBeltMotorPower);
+        components.intakeRollerMotor.set(intakeRollerMotorPower);
+        components.intakeBeltMotor.set(ControlMode.PercentOutput, intakeBeltMotorPower);
+        components.transferBeltMotor.set(ControlMode.PercentOutput, transferBeltMotorPower);
     }
     
 }

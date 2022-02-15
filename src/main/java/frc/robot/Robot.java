@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-//import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,8 +14,6 @@ import frc.robot.ComponentsControl.ComponentsControl;
 import frc.robot.ComponentsControl.ComponentsControlPIDTest;
 import frc.robot.ComponentsControl.ComponentsControlV2;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Compressor;
@@ -50,6 +47,7 @@ public class Robot extends TimedRobot {
   private final Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
   private ComponentsControl componentsControl;
+  private Components components;
       
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -140,7 +138,7 @@ public class Robot extends TimedRobot {
       -controlInputs.driveStickX*forward_power,
       controlInputs.driveStickY*turn_power);
   
-    componentsControl.runComponents(controlInputs, sensorInputs);
+    componentsControl.runComponents(components, controlInputs, sensorInputs);
 
     if (controlInputs.runCompressor)
     {
