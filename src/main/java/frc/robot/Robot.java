@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
   private final Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
   private ComponentsControl componentsControl;
-  private Components components;
+  private Components components = new Components();
       
   /**
    * This function is run when the robot is first started up and should be used for any
