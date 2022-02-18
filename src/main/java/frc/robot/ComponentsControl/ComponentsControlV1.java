@@ -20,9 +20,9 @@ public class ComponentsControlV1 extends ComponentsControl {
         if ( controlInputs.shootLow || controlInputs.shootHigh)
         {
             final double lowShotTargetVelocity = 3000;
-            final double highShotTargetVelocity = 6350;
+            final double highShotTargetVelocity = 6500;
             double targetVelocity = 0;
-            double firstPIDLoopVelocityTargetOffset = 100;
+            double firstPIDLoopVelocityTargetOffset = 50;
             if (controlInputs.shootLow)
             {
                 targetVelocity = lowShotTargetVelocity;
@@ -64,7 +64,7 @@ public class ComponentsControlV1 extends ComponentsControl {
                     {
                         if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
                         {
-                            transferBeltMotorPower = 1.0;
+                            transferBeltMotorPower = 0.5;
                         }
                         else
                         {
@@ -114,10 +114,5 @@ public class ComponentsControlV1 extends ComponentsControl {
         components.intakeRollerMotor.set(intakeRollerMotorPower);
         components.intakeBeltMotor.set(ControlMode.PercentOutput, intakeBeltMotorPower);
         components.transferBeltMotor.set(ControlMode.PercentOutput, transferBeltMotorPower);
-
-        if (controlInputs.testShooter)
-        {
-            components.shooterMotor.set(.60);
-        }
     }
 }

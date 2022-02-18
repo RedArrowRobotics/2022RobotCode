@@ -19,10 +19,10 @@ public class SensorInputs {
     public final void readSensors()
     {
         SmartDashboard.putNumber("foo", foo.getVoltage());
-        lowerBallPresent = lowerIntakeSensor.get();
-        SmartDashboard.putBoolean("Lower Intake Sensor", lowerBallPresent);
-        upperBallPresent = upperIntakeSensor.get();
-        SmartDashboard.putBoolean("Upper Intake Sensor", upperBallPresent);
+        lowerBallPresent = !lowerIntakeSensor.get();
+        SmartDashboard.putBoolean("Intake Sensor - Lower", lowerBallPresent);
+        upperBallPresent = !upperIntakeSensor.get();
+        SmartDashboard.putBoolean("Intake Sensor - Upper", upperBallPresent);
     }
 
 }

@@ -48,7 +48,7 @@ public class ComponentsControlPIDTest extends ComponentsControl {
         }
         if (controlInputs.runTransferBelt)
         {
-            components.transferBeltMotor.set(ControlMode.PercentOutput, 1.0);
+            components.transferBeltMotor.set(ControlMode.PercentOutput, 0.2);
         }
         else{ components.transferBeltMotor.set(ControlMode.PercentOutput, 0.0);}
     }
