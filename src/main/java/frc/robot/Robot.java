@@ -13,7 +13,10 @@ import frc.robot.ComponentsControl.ComponentsControlV1;
 import frc.robot.ComponentsControl.ComponentsControl;
 import frc.robot.ComponentsControl.ComponentsControlPIDTest;
 import frc.robot.ComponentsControl.ComponentsControlV2;
+import frc.robot.ComponentsControl.ComponentsControlV3;
+import edu.wpi.first.cameraserver.CameraServer;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Compressor;
@@ -61,11 +64,16 @@ public class Robot extends TimedRobot {
     //String autoMode = SmartDashboard.getString("DB/Strings 0", "0");
     driveRearRight.follow(driveFrontRight, false);
     driveRearLeft.follow(driveFrontLeft, false);
+    components.intakeBeltMotor.setNeutralMode(NeutralMode.Brake);
+    components.transferBeltMotor.setNeutralMode(NeutralMode.Brake);
 
+    CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
     //driveFrontRight.setInverted(true);
     //driveFrontLeft.setInverted(true);
-    componentsControl = new ComponentsControlV1();
+    componentsControl = new ComponentsControlV3();
   }
+
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -124,7 +132,7 @@ public class Robot extends TimedRobot {
 
     if (controlInputs.switchToBasicComponentControl)
     {
-      componentsControl = new ComponentsControlV1();
+      componentsControl = new ComponentsControlV3();
     }
     if (controlInputs.switchToSensorComponentControl)
     {
@@ -135,8 +143,8 @@ public class Robot extends TimedRobot {
     double turn_power = 1.0;
 
     robotDrive.arcadeDrive(
-      -controlInputs.driveStickX*forward_power,
-      controlInputs.driveStickY*turn_power);
+      controlInputs.driveStickX*forward_power,
+      -controlInputs.driveStickY*turn_power);
   
     componentsControl.runComponents(components, controlInputs, sensorInputs);
 

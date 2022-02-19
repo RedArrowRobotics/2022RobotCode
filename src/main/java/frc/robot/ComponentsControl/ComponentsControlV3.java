@@ -7,12 +7,12 @@ import frc.robot.ControlInputs;
 import frc.robot.SensorInputs;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ComponentsControlV2 extends ComponentsControl {
+public class ComponentsControlV3 extends ComponentsControl {
 
     @Override
     public void runComponents(Components components, ControlInputs controlInputs, SensorInputs sensorInputs) 
     {    
-        Double intakeRollerMotorPower = controlInputs.runIntake ? -1.0 : 0.0;
+        Double intakeRollerMotorPower = 0.0;
         Double intakeBeltMotorPower = 0.0;
         Double transferBeltMotorPower = 0.0;
 
@@ -31,14 +31,18 @@ public class ComponentsControlV2 extends ComponentsControl {
                     intakeBeltMotorPower = 0.4;
                 }
             }
+            if (!sensorInputs.upperBallPresent || !sensorInputs.lowerBallPresent)
+            {
+                intakeRollerMotorPower = -1.0;
+            }
         }
 
         if ( controlInputs.shootLow || controlInputs.shootHigh)
         {
             final double lowShotTargetVelocity = 3000;
-            final double highShotTargetVelocity = 6500;
+            final double highShotTargetVelocity = 5600;
             double targetVelocity = 0;
-            double firstPIDLoopVelocityTargetOffset = 50;
+            double firstPIDLoopVelocityTargetOffset = 0; //50
             if (controlInputs.shootLow)
             {
                 targetVelocity = lowShotTargetVelocity;
@@ -51,7 +55,7 @@ public class ComponentsControlV2 extends ComponentsControl {
             if (!shotInProgress)
             {
                 components.shooterMotorPIDController.setReference(
-                    targetVelocity-firstPIDLoopVelocityTargetOffset, ControlType.kVelocity, 0);
+                    targetVelocity-firstPIDLoopVelocityTargetOffset, ControlType.kVelocity, 1);
                 shotInProgress = true;
                 firstShooterSpinupCompleted = false;
             }
@@ -67,7 +71,8 @@ public class ComponentsControlV2 extends ComponentsControl {
                 {
                     if (!secondShooterSpinupInProcess)
                     {
-                        components.shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity, 2);
+                        components.shooterMotorPIDController.setReference(
+                            targetVelocity, ControlType.kVelocity, 3);
                         secondShooterSpinupInProcess = true;
                     }
                 }
@@ -82,16 +87,10 @@ public class ComponentsControlV2 extends ComponentsControl {
                         {
                             upperBeltPowerAccum = upperBeltPowerAccum+0.05;
                             transferBeltMotorPower = Math.min(upperBeltPowerAccum,1.0);
-                            if (!sensorInputs.upperBallPresent)
-                            {
-                                lowerBeltPowerAccum = lowerBeltPowerAccum+0.05;
-                                intakeBeltMotorPower = Math.min(lowerBeltPowerAccum,1.0);
-                            }
                         }
                         else
                         {
                             shooterVelWithinToleranceCycleCount++;
-                            lowerBeltPowerAccum = 0.0;
                             upperBeltPowerAccum = 0.0;
                         }
                     }
@@ -101,6 +100,11 @@ public class ComponentsControlV2 extends ComponentsControl {
                         shooterVelWithinToleranceCycleCount = 0;
                     }
                 }
+            }
+            if (!sensorInputs.upperBallPresent)
+            {
+                intakeBeltMotorPower = 1.0;
+                transferBeltMotorPower = 0.7;
             }
         }
         else
@@ -113,7 +117,6 @@ public class ComponentsControlV2 extends ComponentsControl {
                 secondShooterSpinupInProcess = false;
                 shooterVelWithinToleranceCycleCount = 0;
                 upperBeltPowerAccum = 0.0;
-                lowerBeltPowerAccum = 0.0;
             }
             components.shooterMotor.set(0.0);
         }

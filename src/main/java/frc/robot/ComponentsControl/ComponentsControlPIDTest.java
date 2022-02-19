@@ -13,28 +13,38 @@ public class ComponentsControlPIDTest extends ComponentsControl {
     @Override
     public void runComponents(Components components, ControlInputs controlInputs, SensorInputs sensorInputs) 
     {
+        final double targetVelocity = 5600;
+        double currentVelocity = components.shooterMotorEncoder.getVelocity();
         if (controlInputs.testShooter)
         {
             if (shotInProgress == false)
             {
-                components.shooterMotorPIDController.setReference(6350, ControlType.kVelocity, 0);
+                components.shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity, 1);
                 shotInProgress = true;
                 firstShooterSpinupCompleted = false;
             }
             else
             {
                 if (firstShooterSpinupCompleted == false)
-                {
-                    if (components.shooterMotorEncoder.getVelocity() > 6000)
+                {   
+                    SmartDashboard.putBoolean("DB/LED 1", false);
+                    if (currentVelocity > 5500)
                     {
                         SmartDashboard.putBoolean("DB/LED 0", true);
                         firstShooterSpinupCompleted = true;
-                        components.shooterMotorPIDController.setReference(6350, ControlType.kVelocity, 2);
+                        components.shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity, 3);
                     }
                 }
                 else
                 {
-                    
+                    final double velocityThreshold = 20.0;
+                    if (currentVelocity >= targetVelocity - velocityThreshold && 
+                         currentVelocity <= targetVelocity + velocityThreshold) {
+                            SmartDashboard.putBoolean("DB/LED 1", true);
+                            
+                    } else {
+                        SmartDashboard.putBoolean("DB/LED 1", false);
+                    }
                 }
             }
             
