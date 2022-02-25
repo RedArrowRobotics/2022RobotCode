@@ -4,24 +4,28 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-//import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.ComponentsControl.ComponentsControlV1;
-import frc.robot.ComponentsControl.ComponentsControl;
-import frc.robot.ComponentsControl.ComponentsControlPIDTest;
-import frc.robot.ComponentsControl.ComponentsControlV2;
-import frc.robot.ComponentsControl.ComponentsControlV3;
-import edu.wpi.first.cameraserver.CameraServer;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+//import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.TimedRobot;
+
+import frc.robot.Autonomous.AutonomousAction;
+import frc.robot.Autonomous.AutonomousActionDoNothing;
+import frc.robot.ComponentsControl.ComponentsControl;
+import frc.robot.ComponentsControl.ComponentsControlPIDTest;
+import frc.robot.ComponentsControl.ComponentsControlV1;
+import frc.robot.ComponentsControl.ComponentsControlV2;
+import frc.robot.ComponentsControl.ComponentsControlV3;
+
+import java.util.ArrayList;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -29,11 +33,8 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
+  
   private final CANSparkMax driveFrontLeft = new CANSparkMax(1, MotorType.kBrushless);
   private final CANSparkMax driveRearLeft = new CANSparkMax(2, MotorType.kBrushless);
   //private final MotorControllerGroup driveLeft = new MotorControllerGroup(driveFrontLeft, driveRearLeft);
@@ -51,17 +52,19 @@ public class Robot extends TimedRobot {
 
   private ComponentsControl componentsControl;
   private Components components = new Components();
-      
+    
+  private final String kAutoModeNull = "Do Nothing";
+  private final String kAutoModeMoveForward = "Move Forward";
+  private final String kAutoModeCaptureBall = "Capture Ball";
+  private ArrayList<AutonomousAction> automousSequence = new ArrayList<AutonomousAction>();
+  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
-    //String autoMode = SmartDashboard.getString("DB/Strings 0", "0");
+
     driveRearRight.follow(driveFrontRight, false);
     driveRearLeft.follow(driveFrontLeft, false);
     components.intakeBeltMotor.setNeutralMode(NeutralMode.Brake);
@@ -72,8 +75,9 @@ public class Robot extends TimedRobot {
     //driveFrontRight.setInverted(true);
     //driveFrontLeft.setInverted(true);
     componentsControl = new ComponentsControlV3();
+    SmartDashboard.putStringArray("Auto List", 
+      new String[]{kAutoModeNull, kAutoModeMoveForward, kAutoModeCaptureBall});
   }
-
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -99,23 +103,28 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    m_autoSelected = SmartDashboard.getString("Auto Selector", kAutoModeNull);
+    switch (m_autoSelected) {
+      case kAutoModeMoveForward:
+        break;
+      case kAutoModeCaptureBall:
+      default:
+        automousSequence.add(new AutonomousActionDoNothing());
+        break;
+    }
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
+    if (automousSequence.size() > 0)
+    {
+      if (automousSequence.get(0).Execute(components, sensorInputs))
+      {
+        automousSequence.remove(0);
+      }
     }
+
   }
 
   /** This function is called once when teleop is enabled. */
