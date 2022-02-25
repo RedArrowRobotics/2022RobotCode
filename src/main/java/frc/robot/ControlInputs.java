@@ -11,6 +11,7 @@ public class ControlInputs {
     private final int testRunShooterButtonId = 1;
     private final int testtransferBeltButtonId = 2;
 
+    private final int highAdaptiveShooterButtonId = 9;
     private final int intakeBeltButtonId = 10;
     private final int lowShooterButtonId = 11;
     private final int highShooterButtonId = 12;
@@ -21,8 +22,10 @@ public class ControlInputs {
 
     public boolean deployIntake = false;
     public boolean runIntake = false;
+    public boolean shootBall = false;
     public boolean shootLow = false;
     public boolean shootHigh = false;
+    public boolean shootAdaptiveHigh = false;
     public boolean runCompressor = false;
     public double driveStickX = 0.0;
     public double driveStickY = 0.0;
@@ -30,6 +33,7 @@ public class ControlInputs {
     public boolean switchToSensorComponentControl = false;
     public boolean testShooter = false;
     public boolean runTransferBelt = false;
+    public int shotType = -1;
 
     public final void readControls()
     {
@@ -42,7 +46,14 @@ public class ControlInputs {
         runIntake = mechanismStick2.getRawButton(intakeBeltButtonId);
         shootLow = mechanismStick2.getRawButton(lowShooterButtonId);
         shootHigh = mechanismStick2.getRawButton(highShooterButtonId);
-
+        shootAdaptiveHigh = mechanismStick2.getRawButton(highAdaptiveShooterButtonId);
+        shootBall = shootLow || shootHigh || shootAdaptiveHigh;
+        
+        if (!shootBall) shotType = -1;
+        if (shootLow) shotType = 0;
+        if (shootHigh) shotType = 1;
+        if (shootAdaptiveHigh) shotType = 2;
+        
         switchToBasicComponentControl = mechanismStick1.getRawButton(1);
         switchToSensorComponentControl = mechanismStick1.getRawButton(12);
 

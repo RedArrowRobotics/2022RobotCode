@@ -19,5 +19,4 @@ public class Components {
     public final SparkMaxPIDController shooterMotorPIDController = shooterMotor.getPIDController();
 
     public final Solenoid intakeArmControl = new Solenoid(PneumaticsModuleType.CTREPCM, 0); 
-
 }

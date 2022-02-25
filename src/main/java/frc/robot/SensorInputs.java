@@ -11,18 +11,20 @@ public class SensorInputs {
 
     private DigitalInput lowerIntakeSensor = new DigitalInput(lowerIntakeSensorDioId);
     private DigitalInput upperIntakeSensor = new DigitalInput(upperIntakeSensorDioId);
-    private AnalogInput foo = new AnalogInput(0);
+    private AnalogInput ultrasonic = new AnalogInput(0);
 
     public boolean lowerBallPresent = false;
     public boolean upperBallPresent = false;
+    public double distanceToTarget = 0.0;
 
     public final void readSensors()
     {
-        SmartDashboard.putNumber("foo", foo.getVoltage());
         lowerBallPresent = !lowerIntakeSensor.get();
         SmartDashboard.putBoolean("Intake Sensor - Lower", lowerBallPresent);
         upperBallPresent = !upperIntakeSensor.get();
         SmartDashboard.putBoolean("Intake Sensor - Upper", upperBallPresent);
+        distanceToTarget = ultrasonic.getVoltage();
+        SmartDashboard.putNumber("Distance To Target", distanceToTarget);
     }
 
 }

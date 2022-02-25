@@ -37,25 +37,46 @@ public class ComponentsControlV3 extends ComponentsControl {
             }
         }
 
-        if ( controlInputs.shootLow || controlInputs.shootHigh)
+        if ( controlInputs.shootBall)
         {
-            final double lowShotTargetVelocity = 3000;
-            final double highShotTargetVelocity = 5600;
+            //final double lowShotTargetVelocity = 3000;
+            //final double highShotTargetVelocity = 5600;
             double targetVelocity = 0;
             double firstPIDLoopVelocityTargetOffset = 0; //50
-            if (controlInputs.shootLow)
+            PIDCalculator shotCalculator = new PIDCalculator();
+            ShotParameters shotParameters = new ShotParameters();
+            /*if (controlInputs.shootLow)
             {
-                targetVelocity = lowShotTargetVelocity;
+                //targetVelocity = lowShotTargetVelocity;
+                shotParameters = shotCalculator.calculateShot(0.0, 0);
             }
             if (controlInputs.shootHigh)
             {
-                targetVelocity = highShotTargetVelocity;
+                //targetVelocity = highShotTargetVelocity;
+                shotParameters = shotCalculator.calculateShot(0.0, 1);
             }
+            if (controlInputs.shootAdaptiveHigh)
+            {
+                shotParameters = shotCalculator.calculateShot(sensorInputs.distanceToTarget, 2);
+            }*/
             
             if (!shotInProgress)
             {
+                shotParameters = shotCalculator.calculateShot(
+                    sensorInputs.distanceToTarget,
+                    controlInputs.shotType);
+                
+                components.shooterMotorPIDController.setP(shotParameters.P);
+                components.shooterMotorPIDController.setI(shotParameters.I);
+                components.shooterMotorPIDController.setD(shotParameters.D);
+                components.shooterMotorPIDController.setFF(shotParameters.FF);
+                targetVelocity = shotParameters.targetVelocity;
+
                 components.shooterMotorPIDController.setReference(
-                    targetVelocity-firstPIDLoopVelocityTargetOffset, ControlType.kVelocity, 1);
+                    targetVelocity-firstPIDLoopVelocityTargetOffset, ControlType.kVelocity);
+
+                //components.shooterMotorPIDController.setReference(
+                //    targetVelocity-firstPIDLoopVelocityTargetOffset, ControlType.kVelocity, 1);
                 shotInProgress = true;
                 firstShooterSpinupCompleted = false;
             }
@@ -68,15 +89,6 @@ public class ComponentsControlV3 extends ComponentsControl {
                     firstShooterSpinupCompleted = true;
                 }
                 if (firstShooterSpinupCompleted)
-                {
-                    if (!secondShooterSpinupInProcess)
-                    {
-                        components.shooterMotorPIDController.setReference(
-                            targetVelocity, ControlType.kVelocity, 3);
-                        secondShooterSpinupInProcess = true;
-                    }
-                }
-                if (secondShooterSpinupInProcess)
                 {
                     double targetVelocityTolerance = 20;
                     int cycleCountThreshold = 10;
@@ -125,6 +137,5 @@ public class ComponentsControlV3 extends ComponentsControl {
         components.intakeRollerMotor.set(intakeRollerMotorPower);
         components.intakeBeltMotor.set(ControlMode.PercentOutput, intakeBeltMotorPower);
         components.transferBeltMotor.set(ControlMode.PercentOutput, transferBeltMotorPower);
-    }
-    
+    }    
 }
