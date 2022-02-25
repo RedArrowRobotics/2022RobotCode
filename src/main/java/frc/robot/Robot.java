@@ -20,9 +20,7 @@ import frc.robot.Autonomous.AutonomousAction;
 import frc.robot.Autonomous.AutonomousActionDoNothing;
 import frc.robot.ComponentsControl.ComponentsControl;
 import frc.robot.ComponentsControl.ComponentsControlPIDTest;
-import frc.robot.ComponentsControl.ComponentsControlV1;
-import frc.robot.ComponentsControl.ComponentsControlV2;
-import frc.robot.ComponentsControl.ComponentsControlV3;
+import frc.robot.ComponentsControl.ComponentsControlV4;
 
 import java.util.ArrayList;
 /**
@@ -73,7 +71,7 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture();
     //driveFrontRight.setInverted(true);
     //driveFrontLeft.setInverted(true);
-    componentsControl = new ComponentsControlV3();
+    componentsControl = new ComponentsControlV4();
     SmartDashboard.putStringArray("Auto List", 
       new String[]{kAutoModeNull, kAutoModeMoveForward, kAutoModeCaptureBall});
   }
@@ -140,7 +138,7 @@ public class Robot extends TimedRobot {
 
     if (controlInputs.switchToBasicComponentControl)
     {
-      componentsControl = new ComponentsControlV3();
+      componentsControl = new ComponentsControlV4();
     }
     if (controlInputs.switchToSensorComponentControl)
     {
