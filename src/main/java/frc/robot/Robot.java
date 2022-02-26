@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 
 import frc.robot.Autonomous.AutonomousAction;
 import frc.robot.Autonomous.AutonomousActionDoNothing;
+import frc.robot.Autonomous.AutonomousActionMoveForward;
 import frc.robot.ComponentsControl.ComponentsControl;
 import frc.robot.ComponentsControl.ComponentsControlPIDTest;
 import frc.robot.ComponentsControl.ComponentsControlV4;
@@ -88,12 +89,14 @@ public class Robot extends TimedRobot {
     m_autoSelected = SmartDashboard.getString("Auto Selector", kAutoModeNull);
     switch (m_autoSelected) {
       case kAutoModeMoveForward:
+        automousSequence.add(new AutonomousActionMoveForward());
         break;
       case kAutoModeCaptureBall:
       default:
         automousSequence.add(new AutonomousActionDoNothing());
         break;
     }
+    automousSequence.get(0).Initialize(driveTrain, components, sensorInputs);
   }
 
   /** This function is called periodically during autonomous. */
@@ -101,10 +104,18 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     if (automousSequence.size() > 0)
     {
-      if (automousSequence.get(0).Execute(components, sensorInputs))
+      if (automousSequence.get(0).Execute(driveTrain, components, sensorInputs))
       {
         automousSequence.remove(0);
+        if (automousSequence.size() > 0)
+        {
+          automousSequence.get(0).Initialize(driveTrain, components, sensorInputs);
+        }
       }
+    }
+    else
+    {
+      driveTrain.arcadeDrive(0.0, 0.0);
     }
 
   }

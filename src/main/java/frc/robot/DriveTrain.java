@@ -26,4 +26,14 @@ public class DriveTrain {
   {
     robotDrive.arcadeDrive(xSpeed, zRotation, true);
   }
+
+  public double getFrontLeftPosition()
+  {
+      return driveFrontLeft.getEncoder().getPosition();
+  }
+
+  public double getFrontRightPosition()
+  {
+      return driveFrontRight.getEncoder().getPosition();
+  }
 }
