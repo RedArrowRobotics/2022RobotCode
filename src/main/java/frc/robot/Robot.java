@@ -5,12 +5,9 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 //import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -32,17 +29,7 @@ import java.util.ArrayList;
 public class Robot extends TimedRobot {
   private String m_autoSelected;
   
-  private final CANSparkMax driveFrontLeft = new CANSparkMax(1, MotorType.kBrushless);
-  private final CANSparkMax driveRearLeft = new CANSparkMax(2, MotorType.kBrushless);
-  //private final MotorControllerGroup driveLeft = new MotorControllerGroup(driveFrontLeft, driveRearLeft);
-
-  private final CANSparkMax driveFrontRight = new CANSparkMax(3, MotorType.kBrushless);
-  private final CANSparkMax driveRearRight = new CANSparkMax(4, MotorType.kBrushless);
-  //private final MotorControllerGroup driveRight = new MotorControllerGroup(driveFrontRight, driveRearRight);
-
-  //private final DifferentialDrive robotDrive = new DifferentialDrive(driveLeft, driveRight);
-  private final DifferentialDrive robotDrive = new DifferentialDrive(driveFrontLeft, driveFrontRight);
-
+  private final DriveTrain driveTrain = new DriveTrain();
   private final ControlInputs controlInputs = new ControlInputs();
   private final SensorInputs sensorInputs = new SensorInputs();
   private final Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
@@ -62,8 +49,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    driveRearRight.follow(driveFrontRight, false);
-    driveRearLeft.follow(driveFrontLeft, false);
     components.intakeBeltMotor.setNeutralMode(NeutralMode.Brake);
     components.transferBeltMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -148,7 +133,7 @@ public class Robot extends TimedRobot {
     double forward_power = 1.0;
     double turn_power = 1.0;
 
-    robotDrive.arcadeDrive(
+    driveTrain.arcadeDrive(
       controlInputs.driveStickX*forward_power,
       -controlInputs.driveStickY*turn_power);
   
