@@ -18,7 +18,7 @@ public class PIDCalculator {
                 shotParameters.P = 0.0;
                 shotParameters.I = 0.0;
                 shotParameters.D = 0.0;
-                shotParameters.FF = 0.0;
+                shotParameters.FF = 0.0000860000072862021;
                 shotParameters.targetVelocity = 5600;
                 break;
             case 2:
