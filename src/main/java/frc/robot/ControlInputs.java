@@ -11,7 +11,7 @@ public class ControlInputs {
     private final int testRunShooterButtonId = 1;
     private final int testtransferBeltButtonId = 2;
 
-    private final int highAdaptiveShooterButtonId = 9;
+    private final int highAdaptiveShooterButtonId = 12;
     private final int intakeBeltButtonId = 10;
     private final int lowShooterButtonId = 11;
     private final int highShooterButtonId = 12;
@@ -46,7 +46,7 @@ public class ControlInputs {
         runIntake = mechanismStick2.getRawButton(intakeBeltButtonId);
         shootLow = mechanismStick2.getRawButton(lowShooterButtonId);
         shootHigh = mechanismStick2.getRawButton(highShooterButtonId);
-        shootAdaptiveHigh = mechanismStick2.getRawButton(highAdaptiveShooterButtonId);
+        shootAdaptiveHigh = mechanismStick1.getRawButton(highAdaptiveShooterButtonId);
         shootBall = shootLow || shootHigh || shootAdaptiveHigh;
         
         if (!shootBall) shotType = -1;

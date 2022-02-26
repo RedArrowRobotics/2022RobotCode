@@ -18,6 +18,7 @@ import frc.robot.Autonomous.AutonomousActionDoNothing;
 import frc.robot.Autonomous.AutonomousActionMoveForward;
 import frc.robot.ComponentsControl.ComponentsControl;
 import frc.robot.ComponentsControl.ComponentsControlPIDTest;
+import frc.robot.ComponentsControl.ComponentsControlV3;
 import frc.robot.ComponentsControl.ComponentsControlV4;
 
 import java.util.ArrayList;
@@ -134,11 +135,7 @@ public class Robot extends TimedRobot {
 
     if (controlInputs.switchToBasicComponentControl)
     {
-      componentsControl = new ComponentsControlV4();
-    }
-    if (controlInputs.switchToSensorComponentControl)
-    {
-      componentsControl = new ComponentsControlPIDTest();
+      componentsControl = new ComponentsControlV3();
     }
 
     double forward_power = 1.0;

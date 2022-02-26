@@ -14,6 +14,7 @@ public class AutonomousActionMoveForward extends AutonomousAction {
     public void Initialize(DriveTrain driveTrain, Components components, SensorInputs sensors) {
         startRightPosition = driveTrain.getFrontRightPosition();
         startLeftPosition = driveTrain.getFrontLeftPosition();
+        
         endRightPosition = startRightPosition + 127.5;
         endLeftPosition = startLeftPosition + 127.5;
     }

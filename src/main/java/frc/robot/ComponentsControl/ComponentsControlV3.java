@@ -39,8 +39,8 @@ public class ComponentsControlV3 extends ComponentsControl {
 
         if ( controlInputs.shootLow || controlInputs.shootHigh)
         {
-            final double lowShotTargetVelocity = 3000;
-            final double highShotTargetVelocity = 5600;
+            final double lowShotTargetVelocity = 2000;
+            final double highShotTargetVelocity = 5800;
             double targetVelocity = 0;
             double firstPIDLoopVelocityTargetOffset = 0; //50
             if (controlInputs.shootLow)

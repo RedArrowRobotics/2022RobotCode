@@ -17,7 +17,7 @@ public class ComponentsControlPIDTest extends ComponentsControl {
         double currentVelocity = components.shooterMotorEncoder.getVelocity();
         if (controlInputs.testShooter)
         {
-            if (shotInProgress == false)
+            /*if (shotInProgress == false)
             {
                 components.shooterMotorPIDController.setReference(targetVelocity, ControlType.kVelocity, 1);
                 shotInProgress = true;
@@ -46,7 +46,8 @@ public class ComponentsControlPIDTest extends ComponentsControl {
                         SmartDashboard.putBoolean("DB/LED 1", false);
                     }
                 }
-            }
+            }*/
+            components.shooterMotor.set(1.0);
             
         }
         else
