@@ -15,4 +15,9 @@ public class AutonomousActionDoNothing extends AutonomousAction {
         driveTrain.arcadeDrive(0.0, 0.0);
         return false;
     }
+
+    @Override
+    public void Finalize(DriveTrain driveTrain, Components components, SensorInputs sensors) {
+        
+    }
 }

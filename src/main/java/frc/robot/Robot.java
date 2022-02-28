@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Autonomous.AutonomousAction;
 import frc.robot.Autonomous.AutonomousActionDoNothing;
 import frc.robot.Autonomous.AutonomousActionMoveForward;
+import frc.robot.Autonomous.AutonomousActionCaptureBall;
+import frc.robot.Autonomous.AutonomousActionShootBalls;
 import frc.robot.ComponentsControl.ComponentsControl;
 import frc.robot.ComponentsControl.ComponentsControlPIDTest;
 import frc.robot.ComponentsControl.ComponentsControlV3;
@@ -93,6 +95,10 @@ public class Robot extends TimedRobot {
         automousSequence.add(new AutonomousActionMoveForward());
         break;
       case kAutoModeCaptureBall:
+        automousSequence.add(new AutonomousActionMoveForward());
+        automousSequence.add(new AutonomousActionCaptureBall());
+        automousSequence.add(new AutonomousActionShootBalls());
+        break;
       default:
         automousSequence.add(new AutonomousActionDoNothing());
         break;
@@ -107,6 +113,7 @@ public class Robot extends TimedRobot {
     {
       if (automousSequence.get(0).Execute(driveTrain, components, sensorInputs))
       {
+        automousSequence.get(0).Finalize(driveTrain, components, sensorInputs);
         automousSequence.remove(0);
         if (automousSequence.size() > 0)
         {
