@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 
 import frc.robot.Autonomous.AutonomousAction;
 import frc.robot.Autonomous.AutonomousActionDoNothing;
-import frc.robot.Autonomous.AutonomousActionMoveForward;
+import frc.robot.Autonomous.AutonomousActionMoveBackward;
 import frc.robot.Autonomous.AutonomousActionCaptureBall;
 import frc.robot.Autonomous.AutonomousActionShootBalls;
 import frc.robot.ComponentsControl.ComponentsControl;
@@ -92,10 +92,10 @@ public class Robot extends TimedRobot {
     m_autoSelected = SmartDashboard.getString("Auto Selector", kAutoModeNull);
     switch (m_autoSelected) {
       case kAutoModeMoveForward:
-        automousSequence.add(new AutonomousActionMoveForward());
+        automousSequence.add(new AutonomousActionMoveBackward());
         break;
       case kAutoModeCaptureBall:
-        automousSequence.add(new AutonomousActionMoveForward());
+        automousSequence.add(new AutonomousActionMoveBackward());
         automousSequence.add(new AutonomousActionCaptureBall());
         automousSequence.add(new AutonomousActionShootBalls());
         break;
