@@ -54,8 +54,8 @@ public class ControlInputs {
         if (shootHigh) shotType = 1;
         if (shootAdaptiveHigh) shotType = 2;
         
-        switchToBasicComponentControl = mechanismStick1.getRawButton(1);
-        switchToSensorComponentControl = mechanismStick1.getRawButton(12);
+        //switchToBasicComponentControl = mechanismStick1.getRawButton(1);
+        //switchToSensorComponentControl = mechanismStick1.getRawButton(12);
 
         testShooter = mechanismStick2.getRawButton(testRunShooterButtonId);
         runTransferBelt = mechanismStick2.getRawButton(testtransferBeltButtonId);
