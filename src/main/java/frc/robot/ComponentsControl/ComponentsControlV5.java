@@ -15,6 +15,7 @@ public class ComponentsControlV5 extends ComponentsControl {
         Double intakeRollerMotorPower = 0.0;
         Double intakeBeltMotorPower = 0.0;
         Double transferBeltMotorPower = 0.0;
+        SpeedCalculator speedCalculator = new SpeedCalculator();
 
         if (controlInputs.runIntake)
         {
@@ -45,12 +46,12 @@ public class ComponentsControlV5 extends ComponentsControl {
             double targetVelocity2 = 0;
             if (controlInputs.shootLow)
             {
-                targetVelocity = lowShotTargetVelocity+10;
+                targetVelocity = lowShotTargetVelocity+speedCalculator.differenceInSpeed(lowShotTargetVelocity);
                 targetVelocity2 = lowShotTargetVelocity;
             }
             if (controlInputs.shootHigh)
             {
-                targetVelocity = highShotTargetVelocity-30;
+                targetVelocity = highShotTargetVelocity+speedCalculator.differenceInSpeed(highShotTargetVelocity);
                 targetVelocity2 = highShotTargetVelocity;
             }
             
@@ -73,34 +74,85 @@ public class ComponentsControlV5 extends ComponentsControl {
                 SmartDashboard.putNumber("Shooter Motor Vel", motorVelocity);
                 if (motorVelocity > maxShooterVel){maxShooterVel = motorVelocity;}
                 SmartDashboard.putNumber("Shooter Motor Max Vel", maxShooterVel);
-                /*if (motorVelocity >= ( targetVelocity - firstPIDLoopVelocityTargetOffset) )
+                SmartDashboard.putNumber("Shooter Motor PID Target", targetVelocity);
+                SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(targetVelocity2));
+
+                double targetVelocityTolerance = 20;
+                int cycleCountThreshold = 10;
+                if ( (motorVelocity >= targetVelocity2 - targetVelocityTolerance) && 
+                (motorVelocity <= targetVelocity2 + targetVelocityTolerance) )
                 {
-                    firstShooterSpinupCompleted = true;
-                }
-                if (firstShooterSpinupCompleted)
-                {*/
-                    double targetVelocityTolerance = 20;
-                    int cycleCountThreshold = 10;
-                    if ( (motorVelocity >= targetVelocity2 - targetVelocityTolerance) && 
-                         (motorVelocity <= targetVelocity2 + targetVelocityTolerance) )
+                    if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
                     {
-                        if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
-                        {
-                            upperBeltPowerAccum = upperBeltPowerAccum+0.05;
-                            transferBeltMotorPower = Math.min(upperBeltPowerAccum,1.0);
-                        }
-                        else
-                        {
-                            shooterVelWithinToleranceCycleCount++;
-                            upperBeltPowerAccum = 0.0;
-                        }
+                        upperBeltPowerAccum = upperBeltPowerAccum+0.05;
+                        transferBeltMotorPower = Math.min(upperBeltPowerAccum,1.0);
                     }
                     else
                     {
-                        SmartDashboard.putBoolean("DB/LED 0", true);
-                        shooterVelWithinToleranceCycleCount = 0;
+                        shooterVelWithinToleranceCycleCount++;
+                        upperBeltPowerAccum = 0.0;
                     }
-                //}
+                }
+                else
+                {
+                    SmartDashboard.putBoolean("DB/LED 0", true);
+                    shooterVelWithinToleranceCycleCount = 0;
+                }
+            }
+            if (!sensorInputs.upperBallPresent)
+            {
+                intakeBeltMotorPower = 1.0;
+                transferBeltMotorPower = 0.7;
+            }
+        }
+        else if ( controlInputs.shootAdaptiveHigh )
+        {
+            final double TargetVelocity = speedCalculator.variableTarget(sensorInputs.distanceToTarget);
+            double targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
+
+            if (!shotInProgress)
+            {
+                components.shooterMotorPIDController.setP(0.0003); //0.00008 | 0.0004 | 0.0003
+                components.shooterMotorPIDController.setI(0.0000000005); //0.0000000000001 | 0.0000000001 | 0.0000000005
+                components.shooterMotorPIDController.setD(0);
+                components.shooterMotorPIDController.setFF(0.0001); //0.0001
+
+                components.shooterMotorPIDController.setReference(
+                    targetVelocity, ControlType.kVelocity);
+                shotInProgress = true;
+                firstShooterSpinupCompleted = false;
+                maxShooterVel = 0.0;
+            }
+            else
+            {
+                final double motorVelocity = components.shooterMotorEncoder.getVelocity();
+                SmartDashboard.putNumber("Shooter Motor Vel", motorVelocity);
+                if (motorVelocity > maxShooterVel){maxShooterVel = motorVelocity;}
+                SmartDashboard.putNumber("Shooter Motor Max Vel", maxShooterVel);
+                SmartDashboard.putNumber("Shooter Motor PID Target", targetVelocity);
+                SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(TargetVelocity));
+                
+                double targetVelocityTolerance = 20;
+                int cycleCountThreshold = 10;
+                if ( (motorVelocity >= TargetVelocity - targetVelocityTolerance) && 
+                (motorVelocity <= TargetVelocity + targetVelocityTolerance) )
+                {
+                    if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
+                    {
+                        upperBeltPowerAccum = upperBeltPowerAccum+0.05;
+                        transferBeltMotorPower = Math.min(upperBeltPowerAccum,1.0);
+                    }
+                    else
+                    {
+                        shooterVelWithinToleranceCycleCount++;
+                        upperBeltPowerAccum = 0.0;
+                    }
+                }
+                else
+                {
+                    SmartDashboard.putBoolean("DB/LED 0", true);
+                    shooterVelWithinToleranceCycleCount = 0;
+                }
             }
             if (!sensorInputs.upperBallPresent)
             {
@@ -126,5 +178,4 @@ public class ComponentsControlV5 extends ComponentsControl {
         components.intakeBeltMotor.set(ControlMode.PercentOutput, intakeBeltMotorPower);
         components.transferBeltMotor.set(ControlMode.PercentOutput, transferBeltMotorPower);
     }
-    
 }

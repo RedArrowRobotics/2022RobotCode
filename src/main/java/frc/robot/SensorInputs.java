@@ -23,7 +23,7 @@ public class SensorInputs {
         SmartDashboard.putBoolean("Intake Sensor - Lower", lowerBallPresent);
         upperBallPresent = !upperIntakeSensor.get();
         SmartDashboard.putBoolean("Intake Sensor - Upper", upperBallPresent);
-        distanceToTarget = ultrasonic.getVoltage();
+        distanceToTarget = ultrasonic.getVoltage()/0.3;
         SmartDashboard.putNumber("Distance To Target", distanceToTarget);
     }
 

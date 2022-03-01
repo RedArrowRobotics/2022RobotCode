@@ -150,8 +150,8 @@ public class Robot extends TimedRobot {
     double turn_power = 1.0;
 
     driveTrain.arcadeDrive(
-      controlInputs.driveStickX*forward_power,
-      -controlInputs.driveStickY*turn_power);
+      controlInputs.driveStickY*forward_power,
+      -controlInputs.driveStickX*turn_power);
   
     componentsControl.runComponents(components, controlInputs, sensorInputs);
 

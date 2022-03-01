@@ -20,6 +20,12 @@ public class DriveTrain {
   {
     driveRearRight.follow(driveFrontRight, false);
     driveRearLeft.follow(driveFrontLeft, false);
+
+    driveFrontLeft.setInverted(true);
+    driveRearLeft.setInverted(true);
+    
+    driveFrontRight.setInverted(false);
+    driveRearRight.setInverted(false);
   }
 
   public void arcadeDrive(double xSpeed, double zRotation )
