@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
       case kAutoModeCaptureBall:
         automousSequence.add(new AutonomousActionMoveBackward());
         automousSequence.add(new AutonomousActionCaptureBall());
-        automousSequence.add(new AutonomousActionShootBalls());
+        //automousSequence.add(new AutonomousActionShootBalls());
         break;
       default:
         automousSequence.add(new AutonomousActionDoNothing());
@@ -118,6 +118,7 @@ public class Robot extends TimedRobot {
         automousSequence.remove(0);
         if (automousSequence.size() > 0)
         {
+          SmartDashboard.putBoolean("DB/LED 1", true);
           automousSequence.get(0).Initialize(driveTrain, components, sensorInputs);
         }
       }

@@ -40,9 +40,8 @@ public class ComponentsControlV5 extends ComponentsControl {
 
         if ( controlInputs.shootLow || controlInputs.shootHigh)
         {
-            final double lowShotTargetVelocity = 2000;
+            final double lowShotTargetVelocity = 2100;
             final double highShotTargetVelocity = 5800;
-            double targetVelocity = 0;
             double targetVelocity2 = 0;
             if (controlInputs.shootLow)
             {
@@ -76,6 +75,7 @@ public class ComponentsControlV5 extends ComponentsControl {
                 SmartDashboard.putNumber("Shooter Motor Max Vel", maxShooterVel);
                 SmartDashboard.putNumber("Shooter Motor PID Target", targetVelocity);
                 SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(targetVelocity2));
+                SmartDashboard.putNumber("Calculated Shooter RPM", targetVelocity2);
 
                 double targetVelocityTolerance = 20;
                 int cycleCountThreshold = 10;
@@ -107,11 +107,12 @@ public class ComponentsControlV5 extends ComponentsControl {
         }
         else if ( controlInputs.shootAdaptiveHigh )
         {
-            final double TargetVelocity = speedCalculator.variableTarget(sensorInputs.distanceToTarget);
-            double targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
-
             if (!shotInProgress)
             {
+                TargetVelocity = speedCalculator.variableTarget(sensorInputs.distanceToTarget);
+                targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
+                SmartDashboard.putNumber("Distance at calculation", sensorInputs.distanceToTarget);
+
                 components.shooterMotorPIDController.setP(0.0003); //0.00008 | 0.0004 | 0.0003
                 components.shooterMotorPIDController.setI(0.0000000005); //0.0000000000001 | 0.0000000001 | 0.0000000005
                 components.shooterMotorPIDController.setD(0);
@@ -131,7 +132,8 @@ public class ComponentsControlV5 extends ComponentsControl {
                 SmartDashboard.putNumber("Shooter Motor Max Vel", maxShooterVel);
                 SmartDashboard.putNumber("Shooter Motor PID Target", targetVelocity);
                 SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(TargetVelocity));
-                
+                SmartDashboard.putNumber("Calculated Shooter RPM", TargetVelocity);
+
                 double targetVelocityTolerance = 20;
                 int cycleCountThreshold = 10;
                 if ( (motorVelocity >= TargetVelocity - targetVelocityTolerance) && 

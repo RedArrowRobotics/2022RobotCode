@@ -17,21 +17,22 @@ public class AutonomousActionCaptureBall extends AutonomousAction {
         startRightPosition = driveTrain.getFrontRightPosition();
         startLeftPosition = driveTrain.getFrontLeftPosition();
         
-        endRightPosition = startRightPosition - 32;
-        endLeftPosition = startLeftPosition - 32;
+        endRightPosition = startRightPosition + 30;
+        endLeftPosition = startLeftPosition + 30;
         components.intakeArmControl.set(true);
     }
 
     @Override
     public boolean Execute(DriveTrain driveTrain, Components components, SensorInputs sensors) {
-        if ( ( (driveTrain.getFrontRightPosition() < endRightPosition) &&
-               (driveTrain.getFrontLeftPosition() < endLeftPosition) ) ||
+        if ( ( (driveTrain.getFrontRightPosition() > endRightPosition) &&
+               (driveTrain.getFrontLeftPosition() > endLeftPosition) ) ||
             sensors.lowerBallPresent) 
         {
             return true;
-        } 
-        driveTrain.arcadeDrive(-0.75, 0.0);
-        components.intakeRollerMotor.set(1.0);
+        }
+        components.intakeArmControl.set(true); 
+        driveTrain.arcadeDrive(0.50, 0.0);
+        components.intakeRollerMotor.set(-1.0);
         
         components.intakeBeltMotor.set(TalonSRXControlMode.PercentOutput,
             !sensors.lowerBallPresent ? 1.0 : 0.0);
