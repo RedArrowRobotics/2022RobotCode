@@ -11,8 +11,8 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
     private double endRightPosition;
     private double endLeftPosition;
     private double positionDelta;
-    private double firstQuarterPosition;
-    private double lastQuarterPosition;
+    private double firstQuarterPositionOffset;
+    private double lastQuarterPositionOffset;
 
     @Override
     public void Initialize(DriveTrain driveTrain, Components components, SensorInputs sensors) {
@@ -20,13 +20,16 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
         startLeftPosition = driveTrain.getFrontLeftPosition();
         
         positionDelta = 65;
-        firstQuarterPosition = positionDelta / 4;
-        lastQuarterPosition = firstQuarterPosition * 3;
+        firstQuarterPositionOffset = positionDelta / 4;
+        lastQuarterPositionOffset = firstQuarterPositionOffset * 3;
         SmartDashboard.putNumber("Auto Move Back - Start Right Position", startRightPosition);
         SmartDashboard.putNumber("Auto Move Back - Start Left Position", startLeftPosition);
         
-        endRightPosition = startRightPosition - positionDelta;
-        endLeftPosition = startLeftPosition - positionDelta;
+        SmartDashboard.putNumber("Auto Move Back - First Quarter Position Offset", firstQuarterPositionOffset);
+        SmartDashboard.putNumber("Auto Move Back - Last Quarter Position Offset", lastQuarterPositionOffset);
+        
+        endRightPosition = startRightPosition + positionDelta;
+        endLeftPosition = startLeftPosition + positionDelta;
 
         SmartDashboard.putNumber("Auto Move Back - End Right Position", endRightPosition);
         SmartDashboard.putNumber("Auto Move Back - End Left Position", endLeftPosition);
@@ -39,8 +42,8 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
         double currentFrontLeftPosition = driveTrain.getFrontLeftPosition();
         SmartDashboard.putNumber("Auto Move Back - Front Right Position", currentFrontRightPosition);
         SmartDashboard.putNumber("Auto Move Back - Front Left Position", currentFrontLeftPosition);
-        if ( (currentFrontLeftPosition < endRightPosition) &&
-           (currentFrontRightPosition < endLeftPosition) )
+        if ( (currentFrontLeftPosition > endRightPosition) &&
+           (currentFrontRightPosition > endLeftPosition) )
         {
             return true;
         } 
@@ -48,22 +51,29 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
         double currentOffsetFromStart = Math.abs(currentFrontRightPosition - startRightPosition); 
         SmartDashboard.putNumber("Auto Move Back - Current Offset", currentOffsetFromStart);
         
-        double driveSpeed = 0.0;
-        if ( currentOffsetFromStart <= firstQuarterPosition)
+        SmartDashboard.putBoolean("DB/LED 1", false);
+        SmartDashboard.putBoolean("DB/LED 2", false);
+        SmartDashboard.putBoolean("DB/LED 3", false);
+        
+        double driveSpeed = 0.75;
+        /*if ( currentOffsetFromStart <= firstQuarterPositionOffset)
         {
-            driveSpeed = currentOffsetFromStart / (firstQuarterPosition) + .5; 
+            SmartDashboard.putBoolean("DB/LED 1", true);
+            driveSpeed = currentOffsetFromStart / (firstQuarterPositionOffset) + .5; 
         }
-        if (currentOffsetFromStart >= lastQuarterPosition)
+        if (currentOffsetFromStart >= lastQuarterPositionOffset)
         {
-            driveSpeed = -(positionDelta - currentOffsetFromStart) / (firstQuarterPosition) + 1; 
+            SmartDashboard.putBoolean("DB/LED 3", true);
+            driveSpeed = ((positionDelta - currentOffsetFromStart) / (firstQuarterPositionOffset) + 1); 
         }
-        if ( (currentOffsetFromStart > firstQuarterPosition) && 
-        (currentOffsetFromStart < lastQuarterPosition) )
+        if ( (currentOffsetFromStart > firstQuarterPositionOffset) && 
+        (currentOffsetFromStart < lastQuarterPositionOffset) )
         {
+            SmartDashboard.putBoolean("DB/LED 2", true);
             driveSpeed = 1.0;
-        }
+        }*/
         SmartDashboard.putNumber("Auto Move Back - Drive Speed", driveSpeed);
-        driveTrain.arcadeDrive(0-driveSpeed, 0.0);
+        driveTrain.arcadeDrive(driveSpeed, 0.0);
         return false;
     }
 
