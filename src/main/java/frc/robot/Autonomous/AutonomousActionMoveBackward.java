@@ -1,5 +1,6 @@
 package frc.robot.Autonomous;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Components;
 import frc.robot.DriveTrain;
 import frc.robot.SensorInputs;
@@ -21,24 +22,32 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
         positionDelta = 65;
         firstQuarterPosition = positionDelta / 4;
         lastQuarterPosition = firstQuarterPosition * 3;
-
+        SmartDashboard.putNumber("Auto Move Back - Start Right Position", startRightPosition);
+        SmartDashboard.putNumber("Auto Move Back - Start Left Position", startLeftPosition);
+        
         endRightPosition = startRightPosition - positionDelta;
         endLeftPosition = startLeftPosition - positionDelta;
+
+        SmartDashboard.putNumber("Auto Move Back - End Right Position", endRightPosition);
+        SmartDashboard.putNumber("Auto Move Back - End Left Position", endLeftPosition);
+        
     }
 
     @Override
     public boolean Execute(DriveTrain driveTrain, Components components, SensorInputs sensors) {
         double currentFrontRightPosition = driveTrain.getFrontRightPosition();
-        double currentFrontLeftPosiiton = driveTrain.getFrontLeftPosition();
-        
-        if ( (currentFrontLeftPosiiton < endRightPosition) &&
+        double currentFrontLeftPosition = driveTrain.getFrontLeftPosition();
+        SmartDashboard.putNumber("Auto Move Back - Front Right Position", currentFrontRightPosition);
+        SmartDashboard.putNumber("Auto Move Back - Front Left Position", currentFrontLeftPosition);
+        if ( (currentFrontLeftPosition < endRightPosition) &&
            (currentFrontRightPosition < endLeftPosition) )
         {
             return true;
         } 
 
-        double currentOffsetFromStart = currentFrontRightPosition - startRightPosition; 
-
+        double currentOffsetFromStart = Math.abs(currentFrontRightPosition - startRightPosition); 
+        SmartDashboard.putNumber("Auto Move Back - Current Offset", currentOffsetFromStart);
+        
         double driveSpeed = 0.0;
         if ( currentOffsetFromStart <= firstQuarterPosition)
         {
@@ -53,7 +62,7 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
         {
             driveSpeed = 1.0;
         }
-
+        SmartDashboard.putNumber("Auto Move Back - Drive Speed", driveSpeed);
         driveTrain.arcadeDrive(0-driveSpeed, 0.0);
         return false;
     }
