@@ -17,11 +17,8 @@ import frc.robot.Autonomous.AutonomousAction;
 import frc.robot.Autonomous.AutonomousActionDoNothing;
 import frc.robot.Autonomous.AutonomousActionMoveBackward;
 import frc.robot.Autonomous.AutonomousActionCaptureBall;
-import frc.robot.Autonomous.AutonomousActionShootBalls;
+import frc.robot.Autonomous.AutonomousActionShootBallsFromCapturePoint;
 import frc.robot.ComponentsControl.ComponentsControl;
-import frc.robot.ComponentsControl.ComponentsControlPIDTest;
-import frc.robot.ComponentsControl.ComponentsControlV3;
-import frc.robot.ComponentsControl.ComponentsControlV4;
 import frc.robot.ComponentsControl.ComponentsControlV5;
 
 import java.util.ArrayList;
@@ -43,8 +40,9 @@ public class Robot extends TimedRobot {
   private Components components = new Components();
     
   private final String kAutoModeNull = "Do Nothing";
-  private final String kAutoModeMoveForward = "Move Forward";
+  private final String kAutoModeMoveBackward = "Move Backward";
   private final String kAutoModeCaptureBall = "Capture Ball";
+  private final String kAutoModeCaptureBallAndShoot = "Capture Ball and Shoot";
   private ArrayList<AutonomousAction> automousSequence = new ArrayList<AutonomousAction>();
   
   /**
@@ -63,7 +61,7 @@ public class Robot extends TimedRobot {
     //driveFrontLeft.setInverted(true);
     componentsControl = new ComponentsControlV5();
     SmartDashboard.putStringArray("Auto List", 
-      new String[]{kAutoModeNull, kAutoModeMoveForward, kAutoModeCaptureBall});
+      new String[]{kAutoModeNull, kAutoModeMoveBackward, kAutoModeCaptureBall});
   }
 
   /**
@@ -92,13 +90,17 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autoSelected = SmartDashboard.getString("Auto Selector", kAutoModeNull);
     switch (m_autoSelected) {
-      case kAutoModeMoveForward:
+      case kAutoModeMoveBackward:
         automousSequence.add(new AutonomousActionMoveBackward());
         break;
       case kAutoModeCaptureBall:
         automousSequence.add(new AutonomousActionMoveBackward());
         automousSequence.add(new AutonomousActionCaptureBall());
-        //automousSequence.add(new AutonomousActionShootBalls());
+        break;
+      case kAutoModeCaptureBallAndShoot:
+        automousSequence.add(new AutonomousActionMoveBackward());
+        automousSequence.add(new AutonomousActionCaptureBall());
+        automousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
         break;
       default:
         automousSequence.add(new AutonomousActionDoNothing());
