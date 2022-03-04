@@ -24,6 +24,7 @@ public class AutonomousActionCaptureBall extends AutonomousAction {
 
     @Override
     public boolean Execute(DriveTrain driveTrain, Components components, SensorInputs sensors) {
+        components.compressor.disable();
         if ( ( (driveTrain.getFrontRightPosition() > endRightPosition) &&
                (driveTrain.getFrontLeftPosition() > endLeftPosition) ) ||
             sensors.lowerBallPresent) 

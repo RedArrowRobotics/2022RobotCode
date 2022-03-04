@@ -38,6 +38,7 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
 
     @Override
     public boolean Execute(DriveTrain driveTrain, Components components, SensorInputs sensors) {
+        components.compressor.disable();
         double currentFrontRightPosition = driveTrain.getFrontRightPosition();
         double currentFrontLeftPosition = driveTrain.getFrontLeftPosition();
         SmartDashboard.putNumber("Auto Move Back - Front Right Position", currentFrontRightPosition);

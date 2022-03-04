@@ -7,10 +7,8 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.Compressor;
 //import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 import frc.robot.Autonomous.AutonomousAction;
@@ -34,7 +32,6 @@ public class Robot extends TimedRobot {
   private final DriveTrain driveTrain = new DriveTrain();
   private final ControlInputs controlInputs = new ControlInputs();
   private final SensorInputs sensorInputs = new SensorInputs();
-  private final Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
   private ComponentsControl componentsControl;
   private Components components = new Components();
@@ -61,7 +58,10 @@ public class Robot extends TimedRobot {
     //driveFrontLeft.setInverted(true);
     componentsControl = new ComponentsControlV5();
     SmartDashboard.putStringArray("Auto List", 
-      new String[]{kAutoModeNull, kAutoModeMoveBackward, kAutoModeCaptureBall});
+      new String[]{kAutoModeNull, 
+        kAutoModeMoveBackward, 
+        kAutoModeCaptureBall, 
+        kAutoModeCaptureBallAndShoot});
   }
 
   /**
@@ -157,16 +157,6 @@ public class Robot extends TimedRobot {
       -controlInputs.driveStickX*turn_power);
   
     componentsControl.runComponents(components, controlInputs, sensorInputs);
-
-    if (controlInputs.runCompressor)
-    {
-      compressor.enableDigital();
-    }
-    else
-    {
-      compressor.disable();
-    }
-
   }
 
   /** This function is called once when the robot is disabled. */

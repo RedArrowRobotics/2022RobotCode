@@ -7,6 +7,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Compressor;
 
 public class Components {
 
@@ -19,4 +20,5 @@ public class Components {
     public final SparkMaxPIDController shooterMotorPIDController = shooterMotor.getPIDController();
 
     public final Solenoid intakeArmControl = new Solenoid(PneumaticsModuleType.CTREPCM, 0); 
+    public final Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 }

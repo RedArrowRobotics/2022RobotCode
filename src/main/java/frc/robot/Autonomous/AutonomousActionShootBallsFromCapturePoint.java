@@ -26,6 +26,7 @@ public class AutonomousActionShootBallsFromCapturePoint extends AutonomousAction
 
     @Override
     public boolean Execute(DriveTrain driveTrain, Components components, SensorInputs sensors) {
+        components.compressor.disable();
         driveTrain.arcadeDrive(0.0, 0.0);
         double targetVelocity = 0;
         double intakeBeltMotorPower = 0.0;

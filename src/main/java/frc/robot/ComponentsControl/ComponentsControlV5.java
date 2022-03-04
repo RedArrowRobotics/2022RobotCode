@@ -104,14 +104,15 @@ public class ComponentsControlV5 extends ComponentsControl {
                 intakeBeltMotorPower = 1.0;
                 transferBeltMotorPower = 0.7;
             }
+            components.compressor.disable();
         }
         else if ( controlInputs.shootAdaptiveHigh )
         {
             if (!shotInProgress)
             {
-                TargetVelocity = speedCalculator.variableTarget(sensorInputs.distanceToTarget);
+                TargetVelocity = speedCalculator.variableTarget(sensorInputs.alternateDistanceToTarget);
                 targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
-                SmartDashboard.putNumber("Distance at calculation", sensorInputs.distanceToTarget);
+                SmartDashboard.putNumber("Distance at calculation", sensorInputs.alternateDistanceToTarget);
 
                 components.shooterMotorPIDController.setP(0.0003); //0.00008 | 0.0004 | 0.0003
                 components.shooterMotorPIDController.setI(0.0000000005); //0.0000000000001 | 0.0000000001 | 0.0000000005
@@ -161,6 +162,7 @@ public class ComponentsControlV5 extends ComponentsControl {
                 intakeBeltMotorPower = 1.0;
                 transferBeltMotorPower = 0.7;
             }
+            components.compressor.disable();
         }
         else
         {
@@ -173,6 +175,7 @@ public class ComponentsControlV5 extends ComponentsControl {
                 upperBeltPowerAccum = 0.0;
             }
             components.shooterMotor.set(0.0);
+            components.compressor.enableDigital();
         }
         components.intakeArmControl.set(controlInputs.deployIntake);
 

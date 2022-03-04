@@ -42,7 +42,7 @@ public class ControlInputs {
         
         runCompressor = driveStick.getZ() > 0.0;
 
-        deployIntake = mechanismStick2.getY() > 0.0;
+        deployIntake = !(mechanismStick2.getY() > 0.0);
         runIntake = mechanismStick2.getRawButton(intakeBeltButtonId);
         shootLow = mechanismStick2.getRawButton(lowShooterButtonId);
         shootHigh = mechanismStick2.getRawButton(highShooterButtonId);
