@@ -3,7 +3,8 @@ package frc.robot.ComponentsControl;
 public class SpeedCalculator {
     public double differenceInSpeed(double setTarget)
     {
-        return ( (-0.0105263158)*setTarget )+31.05263158;
+        //return ( (-0.0105263158)*setTarget )+31.05263158;
+        return ( (-0.0105263158)*setTarget )-8.94736842;
     }
     public double variableTarget(double distance)
     {

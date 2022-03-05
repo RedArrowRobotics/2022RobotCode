@@ -19,7 +19,7 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
         startRightPosition = driveTrain.getFrontRightPosition();
         startLeftPosition = driveTrain.getFrontLeftPosition();
         
-        positionDelta = 30;
+        positionDelta = 28;
         firstQuarterPositionOffset = positionDelta / 4;
         lastQuarterPositionOffset = firstQuarterPositionOffset * 3;
         SmartDashboard.putNumber("Auto Move Back - Start Right Position", startRightPosition);

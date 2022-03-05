@@ -16,6 +16,7 @@ import frc.robot.Autonomous.AutonomousActionDoNothing;
 import frc.robot.Autonomous.AutonomousActionMoveBackward;
 import frc.robot.Autonomous.AutonomousActionCaptureBall;
 import frc.robot.Autonomous.AutonomousActionShootBallsFromCapturePoint;
+import frc.robot.Autonomous.AutononmousActionShootAdaptiveFromCapturePoint;
 import frc.robot.ComponentsControl.ComponentsControl;
 import frc.robot.ComponentsControl.ComponentsControlV5;
 
@@ -38,9 +39,11 @@ public class Robot extends TimedRobot {
     
   private final String kAutoModeNull = "Do Nothing";
   private final String kAutoModeMoveBackward = "Move Backward";
+  private final String kAutoModeMoveBackwardAdaptiveShot = "Move Backward - Adaptive Shot";
   private final String kAutoModeCaptureBall = "Capture Ball";
-  private final String kAutoModeCaptureBallAndShoot = "Capture Ball and Shoot";
-  private ArrayList<AutonomousAction> automousSequence = new ArrayList<AutonomousAction>();
+  private final String kAutoModeCaptureBallAndShoot = "Capture Ball - Fixed Shot";
+  private final String kAutoModeCaptureBallAndAdaptiveShoot = "Capture Ball - Adaptive Shot";
+  private ArrayList<AutonomousAction> automousSequence; 
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -59,9 +62,11 @@ public class Robot extends TimedRobot {
     componentsControl = new ComponentsControlV5();
     SmartDashboard.putStringArray("Auto List", 
       new String[]{kAutoModeNull, 
-        kAutoModeMoveBackward, 
+        kAutoModeMoveBackward,
+        kAutoModeMoveBackwardAdaptiveShot, 
         kAutoModeCaptureBall, 
-        kAutoModeCaptureBallAndShoot});
+        kAutoModeCaptureBallAndShoot,
+      kAutoModeCaptureBallAndAdaptiveShoot});
   }
 
   /**
@@ -88,10 +93,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    automousSequence = new ArrayList<AutonomousAction>();
     m_autoSelected = SmartDashboard.getString("Auto Selector", kAutoModeNull);
     switch (m_autoSelected) {
       case kAutoModeMoveBackward:
         automousSequence.add(new AutonomousActionMoveBackward());
+        break;
+      case kAutoModeMoveBackwardAdaptiveShot:
+        automousSequence.add(new AutonomousActionMoveBackward());
+        automousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
         break;
       case kAutoModeCaptureBall:
         automousSequence.add(new AutonomousActionMoveBackward());
@@ -101,6 +111,11 @@ public class Robot extends TimedRobot {
         automousSequence.add(new AutonomousActionMoveBackward());
         automousSequence.add(new AutonomousActionCaptureBall());
         automousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
+        break;
+      case kAutoModeCaptureBallAndAdaptiveShoot:
+        automousSequence.add(new AutonomousActionMoveBackward());
+        automousSequence.add(new AutonomousActionCaptureBall());
+        automousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
         break;
       default:
         automousSequence.add(new AutonomousActionDoNothing());
@@ -114,6 +129,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     if (automousSequence.size() > 0)
     {
+      sensorInputs.readSensors();
       if (automousSequence.get(0).Execute(driveTrain, components, sensorInputs))
       {
         automousSequence.get(0).Finalize(driveTrain, components, sensorInputs);

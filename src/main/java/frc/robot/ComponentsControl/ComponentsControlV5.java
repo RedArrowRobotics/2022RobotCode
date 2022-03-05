@@ -40,7 +40,7 @@ public class ComponentsControlV5 extends ComponentsControl {
 
         if ( controlInputs.shootLow || controlInputs.shootHigh)
         {
-            final double lowShotTargetVelocity = 2100;
+            final double lowShotTargetVelocity = 2300;
             final double highShotTargetVelocity = 5800;
             double targetVelocity2 = 0;
             if (controlInputs.shootLow)
@@ -77,7 +77,7 @@ public class ComponentsControlV5 extends ComponentsControl {
                 SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(targetVelocity2));
                 SmartDashboard.putNumber("Calculated Shooter RPM", targetVelocity2);
 
-                double targetVelocityTolerance = 20;
+                double targetVelocityTolerance = 70;
                 int cycleCountThreshold = 10;
                 if ( (motorVelocity >= targetVelocity2 - targetVelocityTolerance) && 
                 (motorVelocity <= targetVelocity2 + targetVelocityTolerance) )
@@ -135,7 +135,7 @@ public class ComponentsControlV5 extends ComponentsControl {
                 SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(TargetVelocity));
                 SmartDashboard.putNumber("Calculated Shooter RPM", TargetVelocity);
 
-                double targetVelocityTolerance = 20;
+                double targetVelocityTolerance = 70;
                 int cycleCountThreshold = 10;
                 if ( (motorVelocity >= TargetVelocity - targetVelocityTolerance) && 
                 (motorVelocity <= TargetVelocity + targetVelocityTolerance) )
@@ -176,6 +176,16 @@ public class ComponentsControlV5 extends ComponentsControl {
             }
             components.shooterMotor.set(0.0);
             components.compressor.enableDigital();
+        }
+        if (controlInputs.overRideShooter)
+        {
+            components.shooterMotor.set(0.25);
+            components.compressor.disable();
+        }
+        if (controlInputs.overRideBelts)
+        {
+            intakeBeltMotorPower = 1.0;
+            transferBeltMotorPower = 0.7;
         }
         components.intakeArmControl.set(controlInputs.deployIntake);
 

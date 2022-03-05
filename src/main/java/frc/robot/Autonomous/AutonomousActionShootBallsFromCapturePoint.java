@@ -60,7 +60,7 @@ public class AutonomousActionShootBallsFromCapturePoint extends AutonomousAction
                 SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(targetVelocity2));
                 SmartDashboard.putNumber("Calculated Shooter RPM", targetVelocity2);
 
-                double targetVelocityTolerance = 20;
+                double targetVelocityTolerance = 70;
                 int cycleCountThreshold = 10;
                 if ( (motorVelocity >= targetVelocity2 - targetVelocityTolerance) && 
                 (motorVelocity <= targetVelocity2 + targetVelocityTolerance) )
