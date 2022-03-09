@@ -26,7 +26,7 @@ public class SensorInputs {
         SmartDashboard.putBoolean("Intake Sensor - Upper", upperBallPresent);
         distanceToTarget = ultrasonic.getVoltage();
         SmartDashboard.putNumber("Distance To Target", distanceToTarget);
-        alternateDistanceToTarget = ( ultrasonicMB7051.getVoltage()/0.07463 )+1;
+        alternateDistanceToTarget = ( ultrasonicMB7051.getVoltage()/0.07463 );
         SmartDashboard.putNumber("Distance To Target - MB7051", alternateDistanceToTarget);
 
     }

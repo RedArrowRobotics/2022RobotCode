@@ -21,4 +21,5 @@ public class Components {
 
     public final Solenoid intakeArmControl = new Solenoid(PneumaticsModuleType.CTREPCM, 0); 
     public final Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+    public final Solenoid climbFlipControl = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
 }

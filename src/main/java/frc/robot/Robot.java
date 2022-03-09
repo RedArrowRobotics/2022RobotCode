@@ -127,6 +127,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    components.climbFlipControl.set(true);
     if (automousSequence.size() > 0)
     {
       sensorInputs.readSensors();

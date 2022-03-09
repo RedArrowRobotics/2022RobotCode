@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ComponentsControlV5 extends ComponentsControl {
 
+    private Integer lowShotDelayCycleCount;
     @Override
     public void runComponents(Components components, ControlInputs controlInputs, SensorInputs sensorInputs) 
     {    
@@ -38,16 +39,34 @@ public class ComponentsControlV5 extends ComponentsControl {
             }
         }
 
-        if ( controlInputs.shootLow || controlInputs.shootHigh)
+        
+        if ( controlInputs.shootLow)
         {
-            final double lowShotTargetVelocity = 2300;
+            if (!shotInProgress)
+            {
+                components.shooterMotor.set(.30);
+                shotInProgress = true;
+                lowShotDelayCycleCount = 0;
+            }
+            else
+            {
+                if (lowShotDelayCycleCount < 30)
+                {
+                    lowShotDelayCycleCount++;
+                }
+                else
+                {
+                    intakeBeltMotorPower = 1.0;
+                    transferBeltMotorPower = 0.7;    
+                }
+            }
+        }
+        else if ( controlInputs.shootHigh)
+        {
+            //final double lowShotTargetVelocity = 2300;
             final double highShotTargetVelocity = 5800;
             double targetVelocity2 = 0;
-            if (controlInputs.shootLow)
-            {
-                targetVelocity = lowShotTargetVelocity+speedCalculator.differenceInSpeed(lowShotTargetVelocity);
-                targetVelocity2 = lowShotTargetVelocity;
-            }
+            
             if (controlInputs.shootHigh)
             {
                 targetVelocity = highShotTargetVelocity+speedCalculator.differenceInSpeed(highShotTargetVelocity);
@@ -179,13 +198,26 @@ public class ComponentsControlV5 extends ComponentsControl {
         }
         if (controlInputs.overRideShooter)
         {
-            components.shooterMotor.set(0.25);
+            components.shooterMotor.set(0.36);
             components.compressor.disable();
         }
         if (controlInputs.overRideBelts)
         {
             intakeBeltMotorPower = 1.0;
             transferBeltMotorPower = 0.7;
+        }
+        if (controlInputs.dumpBalls)
+        {
+            intakeBeltMotorPower = -1.0;
+            transferBeltMotorPower = -1.0;            
+        }
+        if (controlInputs.climbControlButton)
+        {
+            components.climbFlipControl.set(false);
+        }
+        else
+        {
+            components.climbFlipControl.set(true);
         }
         components.intakeArmControl.set(controlInputs.deployIntake);
 

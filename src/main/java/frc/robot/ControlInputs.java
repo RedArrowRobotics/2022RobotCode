@@ -17,6 +17,8 @@ public class ControlInputs {
     private final int highShooterButtonId = 12;
     private final int overRideShooterButtonId = 2;
     private final int overRideBeltsButtonId = 3;
+    private final int dumpBallsButtonId = 6;
+    private final int climbControlButtonId = 5;
 
     private final Joystick driveStick = new Joystick(driveStickDeviceId);    
     private final Joystick mechanismStick1 = new Joystick(mechanismStick1DeviceId);
@@ -38,6 +40,8 @@ public class ControlInputs {
     public int shotType = -1;
     public boolean overRideShooter = false;
     public boolean overRideBelts = false;
+    public boolean dumpBalls = false;
+    public boolean climbControlButton = false;
 
     public final void readControls()
     {
@@ -57,6 +61,10 @@ public class ControlInputs {
             overRideShooter = !overRideShooter;
         }
         overRideBelts = driveStick.getRawButton(overRideBeltsButtonId);
+        if (driveStick.getRawButtonPressed(climbControlButtonId))
+        {
+            climbControlButton = !climbControlButton;
+        }
 
         if (!shootBall) shotType = -1;
         if (shootLow) shotType = 0;
@@ -68,5 +76,7 @@ public class ControlInputs {
 
         testShooter = mechanismStick2.getRawButton(testRunShooterButtonId);
         runTransferBelt = mechanismStick2.getRawButton(testtransferBeltButtonId);
+        dumpBalls = driveStick.getRawButton(dumpBallsButtonId);
+        //climbControlButton = driveStick.getRawButton(climbControlButtonId);
     }
 }
