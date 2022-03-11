@@ -17,8 +17,8 @@ public class AutonomousActionCaptureBall extends AutonomousAction {
         startRightPosition = driveTrain.getFrontRightPosition();
         startLeftPosition = driveTrain.getFrontLeftPosition();
         
-        endRightPosition = startRightPosition + 30;
-        endLeftPosition = startLeftPosition + 30;
+        endRightPosition = startRightPosition + 60;
+        endLeftPosition = startLeftPosition + 60;
         components.intakeArmControl.set(true);
     }
 
