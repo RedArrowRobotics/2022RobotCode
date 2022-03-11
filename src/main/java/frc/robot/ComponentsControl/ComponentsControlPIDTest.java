@@ -1,7 +1,7 @@
 package frc.robot.ComponentsControl;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.revrobotics.CANSparkMax.ControlType;
+//import com.revrobotics.CANSparkMax.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Components;
@@ -13,8 +13,8 @@ public class ComponentsControlPIDTest extends ComponentsControl {
     @Override
     public void runComponents(Components components, ControlInputs controlInputs, SensorInputs sensorInputs) 
     {
-        final double targetVelocity = 5600;
-        double currentVelocity = components.shooterMotorEncoder.getVelocity();
+        //final double targetVelocity = 5600;
+        //double currentVelocity = components.shooterMotorEncoder.getVelocity();
         if (controlInputs.testShooter)
         {
             /*if (shotInProgress == false)

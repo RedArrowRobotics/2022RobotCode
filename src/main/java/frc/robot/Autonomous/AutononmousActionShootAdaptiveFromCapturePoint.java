@@ -24,13 +24,11 @@ public class AutononmousActionShootAdaptiveFromCapturePoint extends AutonomousAc
     
     @Override
     public void Initialize(DriveTrain driveTrain, Components components, SensorInputs sensors) {
-        // TODO Auto-generated method stub
         
     }
 
     @Override
     public boolean Execute(DriveTrain driveTrain, Components components, SensorInputs sensors) {
-        // TODO Auto-generated method stub
     components.compressor.disable();
     driveTrain.arcadeDrive(0.0, 0.0);
     double targetVelocity = 0;
@@ -99,7 +97,6 @@ public class AutononmousActionShootAdaptiveFromCapturePoint extends AutonomousAc
 
     @Override
     public void Finalize(DriveTrain driveTrain, Components components, SensorInputs sensors) {
-        // TODO Auto-generated method stub
         
     }
     

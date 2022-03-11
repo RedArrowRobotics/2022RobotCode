@@ -7,7 +7,7 @@ import frc.robot.ControlInputs;
 import frc.robot.SensorInputs;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ComponentsControlV5 extends ComponentsControl {
+public class ComponentsControlV6 extends ComponentsControl {
 
     private Integer lowShotDelayCycleCount;
     @Override
@@ -123,53 +123,102 @@ public class ComponentsControlV5 extends ComponentsControl {
         }
         else if ( controlInputs.shootAdaptiveHigh )
         {
-            if (!shotInProgress)
+            if (selectedShot == 0)
             {
-                TargetVelocity = speedCalculator.variableTarget(sensorInputs.alternateDistanceToTarget);
-                targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
-                SmartDashboard.putNumber("Distance at calculation", sensorInputs.alternateDistanceToTarget);
-
-                components.shooterMotorPIDController.setP(0.0003); //0.00008 | 0.0004 | 0.0003
-                components.shooterMotorPIDController.setI(0.0000000005); //0.0000000000001 | 0.0000000001 | 0.0000000005
-                components.shooterMotorPIDController.setD(0);
-                components.shooterMotorPIDController.setFF(0.0001); //0.0001
-
-                components.shooterMotorPIDController.setReference(
-                    targetVelocity, ControlType.kVelocity);
-                shotInProgress = true;
-                firstShooterSpinupCompleted = false;
-                maxShooterVel = 0.0;
-            }
-            else
-            {
-                final double motorVelocity = components.shooterMotorEncoder.getVelocity();
-                SmartDashboard.putNumber("Shooter Motor Vel", motorVelocity);
-                if (motorVelocity > maxShooterVel){maxShooterVel = motorVelocity;}
-                SmartDashboard.putNumber("Shooter Motor Max Vel", maxShooterVel);
-                SmartDashboard.putNumber("Shooter Motor PID Target", targetVelocity);
-                SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(TargetVelocity));
-                SmartDashboard.putNumber("Calculated Shooter RPM", TargetVelocity);
-
-                double targetVelocityTolerance = 70;
-                int cycleCountThreshold = 10;
-                if ( (motorVelocity >= TargetVelocity - targetVelocityTolerance) && 
-                (motorVelocity <= TargetVelocity + targetVelocityTolerance) )
+                if (sensorInputs.alternateDistanceToTarget<=4)
                 {
-                    if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
+                    selectedShot = 1;
+                    SmartDashboard.putString("Selected Shot Type", "Low Close");
+                }
+                else if (sensorInputs.alternateDistanceToTarget<=5.8)
+                {
+                    selectedShot = 2;
+                    SmartDashboard.putString("Selected Shot Type", "Low Far");
+                }
+                else if (sensorInputs.alternateDistanceToTarget>5.8)
+                {
+                    selectedShot = 3;
+                    SmartDashboard.putString("Selected Shot Type", "Adaptive High");
+                }
+            }
+            if (selectedShot==1 || selectedShot==2)
+            {
+                if (!shotInProgress)
+                {
+                    if (selectedShot==1)
                     {
-                        upperBeltPowerAccum = upperBeltPowerAccum+0.05;
-                        transferBeltMotorPower = Math.min(upperBeltPowerAccum,1.0);
+                        components.shooterMotor.set(.30);
                     }
-                    else
+                    else if (selectedShot==2)
                     {
-                        shooterVelWithinToleranceCycleCount++;
-                        upperBeltPowerAccum = 0.0;
+                        components.shooterMotor.set(.36);
                     }
+                    shotInProgress = true;
+                    lowShotDelayCycleCount = 0;
                 }
                 else
                 {
-                    SmartDashboard.putBoolean("DB/LED 0", true);
-                    shooterVelWithinToleranceCycleCount = 0;
+                    if (lowShotDelayCycleCount < 30)
+                    {
+                        lowShotDelayCycleCount++;
+                    }
+                    else
+                    {
+                        intakeBeltMotorPower = 1.0;
+                        transferBeltMotorPower = 0.7;    
+                    }
+                }
+            }
+            else if (selectedShot==3)
+            {
+                if (!shotInProgress)
+                {
+                    TargetVelocity = speedCalculator.variableTarget(sensorInputs.alternateDistanceToTarget);
+                    targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
+                    SmartDashboard.putNumber("Distance at calculation", sensorInputs.alternateDistanceToTarget);
+
+                    components.shooterMotorPIDController.setP(0.0003); //0.00008 | 0.0004 | 0.0003
+                    components.shooterMotorPIDController.setI(0.0000000005); //0.0000000000001 | 0.0000000001 | 0.0000000005
+                    components.shooterMotorPIDController.setD(0);
+                    components.shooterMotorPIDController.setFF(0.0001); //0.0001
+
+                    components.shooterMotorPIDController.setReference(
+                        targetVelocity, ControlType.kVelocity);
+                    shotInProgress = true;
+                    firstShooterSpinupCompleted = false;
+                    maxShooterVel = 0.0;
+                }
+                else
+                {
+                    final double motorVelocity = components.shooterMotorEncoder.getVelocity();
+                    SmartDashboard.putNumber("Shooter Motor Vel", motorVelocity);
+                    if (motorVelocity > maxShooterVel){maxShooterVel = motorVelocity;}
+                    SmartDashboard.putNumber("Shooter Motor Max Vel", maxShooterVel);
+                    SmartDashboard.putNumber("Shooter Motor PID Target", targetVelocity);
+                    SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(TargetVelocity));
+                    SmartDashboard.putNumber("Calculated Shooter RPM", TargetVelocity);
+
+                    double targetVelocityTolerance = 70;
+                    int cycleCountThreshold = 10;
+                    if ( (motorVelocity >= TargetVelocity - targetVelocityTolerance) && 
+                    (motorVelocity <= TargetVelocity + targetVelocityTolerance) )
+                    {
+                        if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
+                        {
+                            upperBeltPowerAccum = upperBeltPowerAccum+0.05;
+                            transferBeltMotorPower = Math.min(upperBeltPowerAccum,1.0);
+                        }
+                        else
+                        {
+                            shooterVelWithinToleranceCycleCount++;
+                            upperBeltPowerAccum = 0.0;
+                        }
+                    }
+                    else
+                    {
+                        SmartDashboard.putBoolean("DB/LED 0", true);
+                        shooterVelWithinToleranceCycleCount = 0;
+                    }
                 }
             }
             if (!sensorInputs.upperBallPresent)
@@ -182,12 +231,14 @@ public class ComponentsControlV5 extends ComponentsControl {
         else
         {
             SmartDashboard.putBoolean("DB/LED 0", false);
+            SmartDashboard.putString("Selected Shot Type", "None");
             if (shotInProgress)
             {
                 shotInProgress = false;
                 firstShooterSpinupCompleted = false;
                 shooterVelWithinToleranceCycleCount = 0;
                 upperBeltPowerAccum = 0.0;
+                selectedShot = 0;
             }
             components.shooterMotor.set(0.0);
             components.compressor.enableDigital();

@@ -18,7 +18,7 @@ import frc.robot.Autonomous.AutonomousActionCaptureBall;
 import frc.robot.Autonomous.AutonomousActionShootBallsFromCapturePoint;
 import frc.robot.Autonomous.AutononmousActionShootAdaptiveFromCapturePoint;
 import frc.robot.ComponentsControl.ComponentsControl;
-import frc.robot.ComponentsControl.ComponentsControlV5;
+import frc.robot.ComponentsControl.ComponentsControlV6;
 
 import java.util.ArrayList;
 /**
@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture();
     //driveFrontRight.setInverted(true);
     //driveFrontLeft.setInverted(true);
-    componentsControl = new ComponentsControlV5();
+    componentsControl = new ComponentsControlV6();
     SmartDashboard.putStringArray("Auto List", 
       new String[]{kAutoModeNull, 
         kAutoModeMoveBackward,

@@ -16,5 +16,6 @@ public abstract class ComponentsControl {
     protected Double maxShooterVel = 0.0;
     protected Double TargetVelocity = 0.0;
     protected Double targetVelocity = 0.0;
+    protected Integer selectedShot = 0;
     public abstract void runComponents(Components components, ControlInputs controlInputs, SensorInputs sensorInputs);
 }
