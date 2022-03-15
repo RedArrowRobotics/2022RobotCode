@@ -29,65 +29,65 @@ public class AutononmousActionShootAdaptiveFromCapturePoint extends AutonomousAc
 
     @Override
     public boolean Execute(DriveTrain driveTrain, Components components, SensorInputs sensors) {
-    components.compressor.disable();
-    driveTrain.arcadeDrive(0.0, 0.0);
-    double targetVelocity = 0;
-    
-    if (!shotInProgress)
-    {
-        TargetVelocity = speedCalculator.variableTarget(sensors.alternateDistanceToTarget);
-        targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
-        SmartDashboard.putNumber("Distance at calculation", sensors.alternateDistanceToTarget);
-
-        components.shooterMotorPIDController.setP(0.0003); //0.00008 | 0.0004 | 0.0003
-        components.shooterMotorPIDController.setI(0.0000000005); //0.0000000000001 | 0.0000000001 | 0.0000000005
-        components.shooterMotorPIDController.setD(0);
-        components.shooterMotorPIDController.setFF(0.0001); //0.0001
-
-        components.shooterMotorPIDController.setReference(
-            targetVelocity, ControlType.kVelocity);
-        shotInProgress = true;
-        maxShooterVel = 0.0;
-    }
-    else
-    {
-        final double motorVelocity = components.shooterMotorEncoder.getVelocity();
-        SmartDashboard.putNumber("Shooter Motor Vel", motorVelocity);
-        if (motorVelocity > maxShooterVel){maxShooterVel = motorVelocity;}
-        SmartDashboard.putNumber("Shooter Motor Max Vel", maxShooterVel);
-        SmartDashboard.putNumber("Shooter Motor PID Target", targetVelocity);
-        SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(TargetVelocity));
-        SmartDashboard.putNumber("Calculated Shooter RPM", TargetVelocity);
-
-        double targetVelocityTolerance = 50;
-        int cycleCountThreshold = 10;
-        if ( (motorVelocity >= TargetVelocity - targetVelocityTolerance) && 
-        (motorVelocity <= TargetVelocity + targetVelocityTolerance) )
+        components.compressor.disable();
+        driveTrain.arcadeDrive(0.0, 0.0);
+        double targetVelocity = 0;
+        
+        if (!shotInProgress)
         {
-            if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
-            {
-                upperBeltPowerAccum = upperBeltPowerAccum+0.05;
-                transferBeltMotorPower = Math.min(upperBeltPowerAccum,1.0);
-            }
-            else
-            {
-                shooterVelWithinToleranceCycleCount++;
-                upperBeltPowerAccum = 0.0;
-            }
-            SmartDashboard.putNumber("Accum power", upperBeltPowerAccum);
-            SmartDashboard.putNumber("Transfer power", transferBeltMotorPower);
+            TargetVelocity = speedCalculator.variableTarget(sensors.alternateDistanceToTarget);
+            targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
+            SmartDashboard.putNumber("Distance at calculation", sensors.alternateDistanceToTarget);
+
+            components.shooterMotorPIDController.setP(0.0003); //0.00008 | 0.0004 | 0.0003
+            components.shooterMotorPIDController.setI(0.0000000005); //0.0000000000001 | 0.0000000001 | 0.0000000005
+            components.shooterMotorPIDController.setD(0);
+            components.shooterMotorPIDController.setFF(0.0001); //0.0001
+
+            components.shooterMotorPIDController.setReference(
+                targetVelocity, ControlType.kVelocity);
+            shotInProgress = true;
+            maxShooterVel = 0.0;
         }
         else
         {
-            SmartDashboard.putBoolean("DB/LED 0", true);
-            shooterVelWithinToleranceCycleCount = 0;
+            final double motorVelocity = components.shooterMotorEncoder.getVelocity();
+            SmartDashboard.putNumber("Shooter Motor Vel", motorVelocity);
+            if (motorVelocity > maxShooterVel){maxShooterVel = motorVelocity;}
+            SmartDashboard.putNumber("Shooter Motor Max Vel", maxShooterVel);
+            SmartDashboard.putNumber("Shooter Motor PID Target", targetVelocity);
+            SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(TargetVelocity));
+            SmartDashboard.putNumber("Calculated Shooter RPM", TargetVelocity);
+
+            double targetVelocityTolerance = 50;
+            int cycleCountThreshold = 10;
+            if ( (motorVelocity >= TargetVelocity - targetVelocityTolerance) && 
+            (motorVelocity <= TargetVelocity + targetVelocityTolerance) )
+            {
+                if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
+                {
+                    upperBeltPowerAccum = upperBeltPowerAccum+0.05;
+                    transferBeltMotorPower = Math.min(upperBeltPowerAccum,1.0);
+                }
+                else
+                {
+                    shooterVelWithinToleranceCycleCount++;
+                    upperBeltPowerAccum = 0.0;
+                }
+                SmartDashboard.putNumber("Accum power", upperBeltPowerAccum);
+                SmartDashboard.putNumber("Transfer power", transferBeltMotorPower);
+            }
+            else
+            {
+                SmartDashboard.putBoolean("DB/LED 0", true);
+                shooterVelWithinToleranceCycleCount = 0;
+            }
         }
-    }
-    if (!sensors.upperBallPresent)
-    {
-        intakeBeltMotorPower = 1.0;
-        transferBeltMotorPower = 0.7;
-    }
+        if (!sensors.upperBallPresent)
+        {
+            intakeBeltMotorPower = 1.0;
+            transferBeltMotorPower = 0.7;
+        }
         components.compressor.disable();
 
         components.intakeBeltMotor.set(ControlMode.PercentOutput, intakeBeltMotorPower);
