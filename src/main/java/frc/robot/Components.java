@@ -22,4 +22,8 @@ public class Components {
     public final Solenoid intakeArmControl = new Solenoid(PneumaticsModuleType.CTREPCM, 0); 
     public final Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
     public final Solenoid climbFlipControl = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+
+    public final Solenoid claws1 = new Solenoid(PneumaticsModuleType.CTREPCM,2);
+    public final Solenoid claws2 = new Solenoid(PneumaticsModuleType.CTREPCM,3);
+    public final CANSparkMax climbMotor = new CANSparkMax(9, MotorType.kBrushless);
 }
