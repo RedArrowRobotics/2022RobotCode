@@ -16,6 +16,7 @@ import frc.robot.Autonomous.AutonomousActionDoNothing;
 import frc.robot.Autonomous.AutonomousActionMoveBackward;
 import frc.robot.Autonomous.AutonomousActionCaptureBall;
 import frc.robot.Autonomous.AutonomousActionShootBallsFromCapturePoint;
+import frc.robot.Autonomous.AutonomousActionStraightMove;
 import frc.robot.Autonomous.AutononmousActionShootAdaptiveFromCapturePoint;
 import frc.robot.ComponentsControl.ComponentsControl;
 import frc.robot.ComponentsControl.ComponentsControlV6;
@@ -38,11 +39,13 @@ public class Robot extends TimedRobot {
   private Components components = new Components();
     
   private final String kAutoModeNull = "Do Nothing";
-  private final String kAutoModeMoveBackward = "Move Backward";
-  private final String kAutoModeMoveBackwardAdaptiveShot = "Move Backward - Adaptive Shot";
-  private final String kAutoModeCaptureBall = "Capture Ball";
-  private final String kAutoModeCaptureBallAndShoot = "Capture Ball - Fixed Shot";
-  private final String kAutoModeCaptureBallAndAdaptiveShoot = "Capture Ball - Adaptive Shot";
+  private final String kAutoModeMoveBackward = "Move";
+  private final String kAutoModeMoveBackwardExperimental = "Move (Experiment)";
+  private final String kAutoModeMoveBackwardAdaptiveShot = "Move, Ranged Shot";
+  private final String kAutoModeCaptureBall = "Move, Get Ball";
+  private final String kAutoModeCaptureBallAndShoot = "Move, Get Ball, Fixed Shot";
+  private final String kAutoModeCaptureBallAndAdaptiveShoot = "Move, Get Ball, Ranged Shot";
+  private final String kAutoModeCaptureSideBallAndShoot = "Wall Ball - Move, Get Ball, Fixed Shot";
   private ArrayList<AutonomousAction> automousSequence; 
   
   /**
@@ -63,10 +66,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putStringArray("Auto List", 
       new String[]{kAutoModeNull, 
         kAutoModeMoveBackward,
+        kAutoModeMoveBackwardExperimental,
         kAutoModeMoveBackwardAdaptiveShot, 
         kAutoModeCaptureBall, 
         kAutoModeCaptureBallAndShoot,
-      kAutoModeCaptureBallAndAdaptiveShoot});
+        kAutoModeCaptureBallAndAdaptiveShoot,
+        kAutoModeCaptureSideBallAndShoot});
   }
 
   /**
@@ -97,26 +102,33 @@ public class Robot extends TimedRobot {
     m_autoSelected = SmartDashboard.getString("Auto Selector", kAutoModeNull);
     switch (m_autoSelected) {
       case kAutoModeMoveBackward:
-        automousSequence.add(new AutonomousActionMoveBackward());
+        automousSequence.add(new AutonomousActionMoveBackward(84));
+        break;
+      case kAutoModeMoveBackwardExperimental:
+        automousSequence.add(new AutonomousActionStraightMove(60.0, 2.0, 1, 0.05));
         break;
       case kAutoModeMoveBackwardAdaptiveShot:
-        automousSequence.add(new AutonomousActionMoveBackward());
+        automousSequence.add(new AutonomousActionMoveBackward(84));
         automousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
         break;
       case kAutoModeCaptureBall:
-        automousSequence.add(new AutonomousActionMoveBackward());
+        automousSequence.add(new AutonomousActionMoveBackward(84));
         automousSequence.add(new AutonomousActionCaptureBall());
         break;
       case kAutoModeCaptureBallAndShoot:
-        automousSequence.add(new AutonomousActionMoveBackward());
+        automousSequence.add(new AutonomousActionMoveBackward(84));
         automousSequence.add(new AutonomousActionCaptureBall());
         automousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
         break;
       case kAutoModeCaptureBallAndAdaptiveShoot:
-        automousSequence.add(new AutonomousActionMoveBackward());
+        automousSequence.add(new AutonomousActionMoveBackward(84));
         automousSequence.add(new AutonomousActionCaptureBall());
         automousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
         break;
+      case kAutoModeCaptureSideBallAndShoot:
+        automousSequence.add(new AutonomousActionMoveBackward(60));
+        automousSequence.add(new AutonomousActionCaptureBall());
+        automousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
       default:
         automousSequence.add(new AutonomousActionDoNothing());
         break;

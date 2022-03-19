@@ -10,17 +10,21 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
     private double startLeftPosition;
     private double endRightPosition;
     private double endLeftPosition;
-    private double positionDelta;
+    private double rotationsToTravel;
     private double firstQuarterPositionOffset;
     private double lastQuarterPositionOffset;
+    
+    public AutonomousActionMoveBackward(double inchesToTravel)
+    {
+        rotationsToTravel = inchesToTravel * 12.75 / (Math.PI * 6);
+    }
 
     @Override
     public void Initialize(DriveTrain driveTrain, Components components, SensorInputs sensors) {
         startRightPosition = driveTrain.getFrontRightPosition();
         startLeftPosition = driveTrain.getFrontLeftPosition();
         
-        positionDelta = 60;
-        firstQuarterPositionOffset = positionDelta / 4;
+        firstQuarterPositionOffset = rotationsToTravel / 4;
         lastQuarterPositionOffset = firstQuarterPositionOffset * 3;
         SmartDashboard.putNumber("Auto Move Back - Start Right Position", startRightPosition);
         SmartDashboard.putNumber("Auto Move Back - Start Left Position", startLeftPosition);
@@ -28,8 +32,8 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
         SmartDashboard.putNumber("Auto Move Back - First Quarter Position Offset", firstQuarterPositionOffset);
         SmartDashboard.putNumber("Auto Move Back - Last Quarter Position Offset", lastQuarterPositionOffset);
         
-        endRightPosition = startRightPosition + positionDelta;
-        endLeftPosition = startLeftPosition + positionDelta;
+        endRightPosition = startRightPosition + rotationsToTravel;
+        endLeftPosition = startLeftPosition + rotationsToTravel;
 
         SmartDashboard.putNumber("Auto Move Back - End Right Position", endRightPosition);
         SmartDashboard.putNumber("Auto Move Back - End Left Position", endLeftPosition);
@@ -66,7 +70,7 @@ public class AutonomousActionMoveBackward extends AutonomousAction {
         if (currentOffsetFromStart >= lastQuarterPositionOffset)
         {
             SmartDashboard.putBoolean("DB/LED 3", true);
-            driveSpeed = ((positionDelta - currentOffsetFromStart) / (firstQuarterPositionOffset) / 2 + .25); 
+            driveSpeed = ((rotationsToTravel - currentOffsetFromStart) / (firstQuarterPositionOffset) / 2 + .25); 
         }
         if ( (currentOffsetFromStart > firstQuarterPositionOffset) && 
         (currentOffsetFromStart < lastQuarterPositionOffset) )
