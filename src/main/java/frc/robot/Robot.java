@@ -13,10 +13,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 
 import frc.robot.Autonomous.AutonomousAction;
 import frc.robot.Autonomous.AutonomousActionDoNothing;
+import frc.robot.Autonomous.AutonomousActionMoveAndCapture;
 import frc.robot.Autonomous.AutonomousActionMoveBackward;
 import frc.robot.Autonomous.AutonomousActionCaptureBall;
 import frc.robot.Autonomous.AutonomousActionShootBallsFromCapturePoint;
-import frc.robot.Autonomous.AutonomousActionStraightMove;
+//import frc.robot.Autonomous.AutonomousActionStraightMove;
 import frc.robot.Autonomous.AutononmousActionShootAdaptiveFromCapturePoint;
 import frc.robot.ComponentsControl.ComponentsControl;
 import frc.robot.ComponentsControl.ComponentsControlV6;
@@ -40,13 +41,13 @@ public class Robot extends TimedRobot {
     
   private final String kAutoModeNull = "Do Nothing";
   private final String kAutoModeMoveBackward = "Move";
-  private final String kAutoModeMoveBackwardExperimental = "Move (Experiment)";
+  private final String kAutoModeMoveBackAndGetBallThenShoot = "Move & Get Ball, Fixed Shot";
   private final String kAutoModeMoveBackwardAdaptiveShot = "Move, Ranged Shot";
   private final String kAutoModeCaptureBall = "Move, Get Ball";
   private final String kAutoModeCaptureBallAndShoot = "Move, Get Ball, Fixed Shot";
   private final String kAutoModeCaptureBallAndAdaptiveShoot = "Move, Get Ball, Ranged Shot";
   private final String kAutoModeCaptureSideBallAndShoot = "Wall Ball - Move, Get Ball, Fixed Shot";
-  private ArrayList<AutonomousAction> automousSequence; 
+  private ArrayList<AutonomousAction> autonomousSequence; 
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -66,7 +67,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putStringArray("Auto List", 
       new String[]{kAutoModeNull, 
         kAutoModeMoveBackward,
-        kAutoModeMoveBackwardExperimental,
+        kAutoModeMoveBackAndGetBallThenShoot,
         kAutoModeMoveBackwardAdaptiveShot, 
         kAutoModeCaptureBall, 
         kAutoModeCaptureBallAndShoot,
@@ -98,59 +99,59 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    automousSequence = new ArrayList<AutonomousAction>();
+    autonomousSequence = new ArrayList<AutonomousAction>();
     m_autoSelected = SmartDashboard.getString("Auto Selector", kAutoModeNull);
     switch (m_autoSelected) {
       case kAutoModeMoveBackward:
-        automousSequence.add(new AutonomousActionMoveBackward(84));
+        autonomousSequence.add(new AutonomousActionMoveBackward(84));
         break;
-      case kAutoModeMoveBackwardExperimental:
-        automousSequence.add(new AutonomousActionStraightMove(60.0, 2.0, 1, 0.05));
+      case kAutoModeMoveBackAndGetBallThenShoot:
+        autonomousSequence.add(new AutonomousActionMoveAndCapture(96));  
+        autonomousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
         break;
       case kAutoModeMoveBackwardAdaptiveShot:
-        automousSequence.add(new AutonomousActionMoveBackward(84));
-        automousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
+        autonomousSequence.add(new AutonomousActionMoveBackward(84));
+        autonomousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
         break;
       case kAutoModeCaptureBall:
-        automousSequence.add(new AutonomousActionMoveBackward(84));
-        automousSequence.add(new AutonomousActionCaptureBall());
+        autonomousSequence.add(new AutonomousActionMoveBackward(84));
+        autonomousSequence.add(new AutonomousActionCaptureBall());
         break;
       case kAutoModeCaptureBallAndShoot:
-        automousSequence.add(new AutonomousActionMoveBackward(84));
-        automousSequence.add(new AutonomousActionCaptureBall());
-        automousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
+        autonomousSequence.add(new AutonomousActionMoveBackward(84));
+        autonomousSequence.add(new AutonomousActionCaptureBall());
+        autonomousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
         break;
       case kAutoModeCaptureBallAndAdaptiveShoot:
-        automousSequence.add(new AutonomousActionMoveBackward(84));
-        automousSequence.add(new AutonomousActionCaptureBall());
-        automousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
+        autonomousSequence.add(new AutonomousActionMoveBackward(84));
+        autonomousSequence.add(new AutonomousActionCaptureBall());
+        autonomousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
         break;
       case kAutoModeCaptureSideBallAndShoot:
-        automousSequence.add(new AutonomousActionMoveBackward(60));
-        automousSequence.add(new AutonomousActionCaptureBall());
-        automousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
+        autonomousSequence.add(new AutonomousActionMoveBackward(60));
+        autonomousSequence.add(new AutonomousActionCaptureBall());
+        autonomousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
       default:
-        automousSequence.add(new AutonomousActionDoNothing());
+        autonomousSequence.add(new AutonomousActionDoNothing());
         break;
     }
-    automousSequence.get(0).Initialize(driveTrain, components, sensorInputs);
+    autonomousSequence.get(0).Initialize(driveTrain, components, sensorInputs);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    components.climbFlipControl.set(true);
-    if (automousSequence.size() > 0)
+    if (autonomousSequence.size() > 0)
     {
       sensorInputs.readSensors();
-      if (automousSequence.get(0).Execute(driveTrain, components, sensorInputs))
+      if (autonomousSequence.get(0).Execute(driveTrain, components, sensorInputs))
       {
-        automousSequence.get(0).Finalize(driveTrain, components, sensorInputs);
-        automousSequence.remove(0);
-        if (automousSequence.size() > 0)
+        autonomousSequence.get(0).Finalize(driveTrain, components, sensorInputs);
+        autonomousSequence.remove(0);
+        if (autonomousSequence.size() > 0)
         {
           SmartDashboard.putBoolean("DB/LED 1", true);
-          automousSequence.get(0).Initialize(driveTrain, components, sensorInputs);
+          autonomousSequence.get(0).Initialize(driveTrain, components, sensorInputs);
         }
       }
     }

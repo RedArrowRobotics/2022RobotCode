@@ -16,6 +16,7 @@ public class ComponentsControlV6 extends ComponentsControl {
         Double intakeRollerMotorPower = 0.0;
         Double intakeBeltMotorPower = 0.0;
         Double transferBeltMotorPower = 0.0;
+        Double climbBarRotationMotorPower = 0.0;
         SpeedCalculator speedCalculator = new SpeedCalculator();
 
         if (controlInputs.runIntake)
@@ -258,18 +259,48 @@ public class ComponentsControlV6 extends ComponentsControl {
             intakeBeltMotorPower = -1.0;
             transferBeltMotorPower = -1.0;            
         }
-        if (controlInputs.climbControlButton)
+        //Climb
+        if (components.climbEnabled)
         {
-            components.climbFlipControl.set(false);
+            //  1
+            if (controlInputs.claws1Button_Open)
+            {
+                components.claws1Grab = false;
+            }
+            else if (controlInputs.claws1Button_Close || sensorInputs.firstClawObjectPresent)
+            {
+                components.claws1Grab = true;
+            }
+            //  2
+            if (controlInputs.claws2Button_Open)
+            {
+                components.claws2Grab = false;
+            }
+            else if (controlInputs.claws2Button_Close || sensorInputs.secondClawObjectPresent)
+            {
+                components.claws2Grab = true;
+            }
+            //  Motor
+            if (controlInputs.climbRotation > 0.5)
+            {
+                climbBarRotationMotorPower = -1.0;
+            }
+            else if (controlInputs.climbRotation < -0.5)
+            {
+                climbBarRotationMotorPower = 1.0;
+            }
         }
-        else
+        else if (!components.climbEnabled && controlInputs.climbEnableButton)
         {
-            components.climbFlipControl.set(true);
+            components.climbEnabled = true;
         }
-        components.intakeArmControl.set(controlInputs.deployIntake);
 
+        components.climbBarRotationMotor.set(climbBarRotationMotorPower);
+        components.intakeArmControl.set(controlInputs.deployIntake);
         components.intakeRollerMotor.set(intakeRollerMotorPower);
         components.intakeBeltMotor.set(ControlMode.PercentOutput, intakeBeltMotorPower);
         components.transferBeltMotor.set(ControlMode.PercentOutput, transferBeltMotorPower);
+        components.claws1.set(!components.claws1Grab);
+        components.claws2.set(!components.claws2Grab);
     }
 }

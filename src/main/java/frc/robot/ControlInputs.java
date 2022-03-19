@@ -12,13 +12,17 @@ public class ControlInputs {
     private final int testtransferBeltButtonId = 2;
 
     private final int highAdaptiveShooterButtonId = 12;
-    private final int intakeBeltButtonId = 10;
-    private final int lowShooterButtonId = 11;
-    private final int highShooterButtonId = 12;
+    private final int intakeBeltButtonId = 1;
+    private final int lowShooterButtonId = 10;
+    private final int highShooterButtonId = 11;
     private final int overRideShooterButtonId = 2;
     private final int overRideBeltsButtonId = 3;
     private final int dumpBallsButtonId = 6;
-    private final int climbControlButtonId = 5;
+
+    private final int claws1ButtonOpenId = 1; 
+    private final int claws2ButtonOpenId = 2;
+    private final int claws1ButtonCloseId = 3; 
+    private final int claws2ButtonCloseId = 4;
 
     private final Joystick driveStick = new Joystick(driveStickDeviceId);    
     private final Joystick mechanismStick1 = new Joystick(mechanismStick1DeviceId);
@@ -41,7 +45,12 @@ public class ControlInputs {
     public boolean overRideShooter = false;
     public boolean overRideBelts = false;
     public boolean dumpBalls = false;
-    public boolean climbControlButton = false;
+    public double climbRotation = 0.0;
+    public boolean claws1Button_Open = false;
+    public boolean claws2Button_Open = false;
+    public boolean claws1Button_Close = false;
+    public boolean claws2Button_Close = false;
+    public boolean climbEnableButton = false;
 
     public final void readControls()
     {
@@ -54,17 +63,13 @@ public class ControlInputs {
         runIntake = mechanismStick2.getRawButton(intakeBeltButtonId);
         shootLow = mechanismStick2.getRawButton(lowShooterButtonId);
         shootHigh = mechanismStick2.getRawButton(highShooterButtonId);
-        shootAdaptiveHigh = mechanismStick1.getRawButton(highAdaptiveShooterButtonId);
+        shootAdaptiveHigh = mechanismStick2.getRawButton(highAdaptiveShooterButtonId);
         shootBall = shootLow || shootHigh || shootAdaptiveHigh;
         if (driveStick.getRawButtonPressed(overRideShooterButtonId))
         {
             overRideShooter = !overRideShooter;
         }
         overRideBelts = driveStick.getRawButton(overRideBeltsButtonId);
-        if (driveStick.getRawButtonPressed(climbControlButtonId))
-        {
-            climbControlButton = !climbControlButton;
-        }
 
         if (!shootBall) shotType = -1;
         if (shootLow) shotType = 0;
@@ -77,6 +82,12 @@ public class ControlInputs {
         testShooter = mechanismStick2.getRawButton(testRunShooterButtonId);
         runTransferBelt = mechanismStick2.getRawButton(testtransferBeltButtonId);
         dumpBalls = driveStick.getRawButton(dumpBallsButtonId);
-        //climbControlButton = driveStick.getRawButton(climbControlButtonId);
+        
+        climbRotation = mechanismStick1.getY();
+        claws1Button_Open = mechanismStick1.getRawButton(claws1ButtonOpenId);
+        claws2Button_Open = mechanismStick1.getRawButton(claws2ButtonOpenId);
+        claws1Button_Close = mechanismStick1.getRawButton(claws1ButtonCloseId);
+        claws2Button_Close = mechanismStick1.getRawButton(claws2ButtonCloseId);
+        climbEnableButton = driveStick.getRawButton(1);
     }
 }

@@ -207,14 +207,6 @@ public class ComponentsControlV5 extends ComponentsControl {
             intakeBeltMotorPower = -1.0;
             transferBeltMotorPower = -1.0;            
         }
-        if (controlInputs.climbControlButton)
-        {
-            components.climbFlipControl.set(false);
-        }
-        else
-        {
-            components.climbFlipControl.set(true);
-        }
         components.intakeArmControl.set(controlInputs.deployIntake);
 
         components.intakeRollerMotor.set(intakeRollerMotorPower);
