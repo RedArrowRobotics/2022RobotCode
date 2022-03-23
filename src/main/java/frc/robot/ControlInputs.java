@@ -15,8 +15,8 @@ public class ControlInputs {
     private final int intakeBeltButtonId = 1;
     private final int lowShooterButtonId = 10;
     private final int highShooterButtonId = 11;
-    private final int overRideShooterButtonId = 2;
-    private final int overRideBeltsButtonId = 3;
+    private final int overRideShooterButtonId = 3;
+    private final int overRideBeltsButtonId = 4;
     private final int dumpBallsButtonId = 6;
 
     private final int claws1ButtonOpenId = 1; 

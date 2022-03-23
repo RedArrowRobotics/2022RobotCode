@@ -283,11 +283,11 @@ public class ComponentsControlV6 extends ComponentsControl {
             //  Motor
             if (controlInputs.climbRotation > 0.5)
             {
-                climbBarRotationMotorPower = -1.0;
+                climbBarRotationMotorPower = 1.0;
             }
             else if (controlInputs.climbRotation < -0.5)
             {
-                climbBarRotationMotorPower = 1.0;
+                climbBarRotationMotorPower = -1.0;
             }
         }
         else if (!components.climbEnabled && controlInputs.climbEnableButton)

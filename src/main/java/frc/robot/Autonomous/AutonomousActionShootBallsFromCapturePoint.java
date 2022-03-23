@@ -32,7 +32,7 @@ public class AutonomousActionShootBallsFromCapturePoint extends AutonomousAction
         double intakeBeltMotorPower = 0.0;
         double transferBeltMotorPower = 0.0;
         
-        final double highShotTargetVelocity = 5900;
+        final double highShotTargetVelocity = 5800;
             double targetVelocity2 = 0;
             targetVelocity = highShotTargetVelocity+speedCalculator.differenceInSpeed(highShotTargetVelocity);
             targetVelocity2 = highShotTargetVelocity;
