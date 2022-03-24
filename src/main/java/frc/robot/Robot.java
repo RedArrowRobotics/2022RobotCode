@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Autonomous.AutonomousAction;
 import frc.robot.Autonomous.AutonomousActionDoNothing;
 import frc.robot.Autonomous.AutonomousActionMoveAndCapture;
@@ -37,6 +35,8 @@ public class Robot extends TimedRobot {
   private final DriveTrain driveTrain = new DriveTrain();
   private final ControlInputs controlInputs = new ControlInputs();
   private final SensorInputs sensorInputs = new SensorInputs();
+
+  //private final ShuffleBoardSetup shuffleBoardSetup = new ShuffleBoardSetup();
 
   private ComponentsControl componentsControl;
   private Components components = new Components();
@@ -88,11 +88,8 @@ public class Robot extends TimedRobot {
     auto_chooser.addOption(kAutoModeCaptureSideBallAndShoot, kAutoModeCaptureSideBallAndShoot);
     auto_chooser.setDefaultOption(kAutoModeNull, kAutoModeNull);
 
-    Shuffleboard.getTab("Auto")
-        .add("Chosen Auto", auto_chooser)
-        .withWidget(BuiltInWidgets.kComboBoxChooser)
-        .withSize(24, 16)
-        .withPosition(0, 0);
+    //shuffleBoardSetup.AutoTab(auto_chooser);
+    SmartDashboard.putData(auto_chooser);
   }
 
   /**

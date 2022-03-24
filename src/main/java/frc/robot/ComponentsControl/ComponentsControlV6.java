@@ -126,20 +126,27 @@ public class ComponentsControlV6 extends ComponentsControl {
         {
             if (selectedShot == 0)
             {
-                if (sensorInputs.alternateDistanceToTarget<=4)
+                if (sensorInputs.alternateDistanceToTarget>1.8)
                 {
-                    selectedShot = 1;
-                    SmartDashboard.putString("Selected Shot Type", "Low Close");
+                    if (sensorInputs.alternateDistanceToTarget<=4)
+                    {
+                        selectedShot = 1;
+                        SmartDashboard.putString("Selected Shot Type", "Low Close");
+                    }
+                    else if (sensorInputs.alternateDistanceToTarget<=5.8)
+                    {
+                        selectedShot = 2;
+                        SmartDashboard.putString("Selected Shot Type", "Low Far");
+                    }
+                    else if (sensorInputs.alternateDistanceToTarget>5.8)
+                    {
+                        selectedShot = 3;
+                        SmartDashboard.putString("Selected Shot Type", "Adaptive High");
+                    }
                 }
-                else if (sensorInputs.alternateDistanceToTarget<=5.8)
+                else
                 {
-                    selectedShot = 2;
-                    SmartDashboard.putString("Selected Shot Type", "Low Far");
-                }
-                else if (sensorInputs.alternateDistanceToTarget>5.8)
-                {
-                    selectedShot = 3;
-                    SmartDashboard.putString("Selected Shot Type", "Adaptive High");
+                    SmartDashboard.putString("Selected Shot Type", "To Close");
                 }
             }
             if (selectedShot==1 || selectedShot==2)
