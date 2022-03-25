@@ -126,7 +126,7 @@ public class ComponentsControlV6 extends ComponentsControl {
         {
             if (selectedShot == 0)
             {
-                if (sensorInputs.alternateDistanceToTarget>1.8)
+                if (sensorInputs.alternateDistanceToTarget>2)
                 {
                     if (sensorInputs.alternateDistanceToTarget<=4)
                     {
@@ -288,11 +288,15 @@ public class ComponentsControlV6 extends ComponentsControl {
                 components.claws2Grab = true;
             }
             //  Motor
-            if (controlInputs.climbRotation > 0.5)
+            /*if (controlInputs.climbRotation > 0.5)
             {
-                climbBarRotationMotorPower = 1.0;
+                climbBarRotationMotorPower = -1.0;
             }
             else if (controlInputs.climbRotation < -0.5)
+            {
+                climbBarRotationMotorPower = -1.0;
+            }*/
+            if (controlInputs.climbRotation2)
             {
                 climbBarRotationMotorPower = -1.0;
             }

@@ -46,6 +46,7 @@ public class ControlInputs {
     public boolean overRideBelts = false;
     public boolean dumpBalls = false;
     public double climbRotation = 0.0;
+    public boolean climbRotation2 = false;
     public boolean claws1Button_Open = false;
     public boolean claws2Button_Open = false;
     public boolean claws1Button_Close = false;
@@ -84,6 +85,7 @@ public class ControlInputs {
         dumpBalls = driveStick.getRawButton(dumpBallsButtonId);
         
         climbRotation = mechanismStick1.getY();
+        climbRotation2 = driveStick.getRawButton(2);
         claws1Button_Open = mechanismStick1.getRawButton(claws1ButtonOpenId);
         claws2Button_Open = mechanismStick1.getRawButton(claws2ButtonOpenId);
         claws1Button_Close = mechanismStick1.getRawButton(claws1ButtonCloseId);
