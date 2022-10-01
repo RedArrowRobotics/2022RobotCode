@@ -1,14 +1,12 @@
 package frc.robot.Autonomous;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 
 import frc.robot.Components;
 import frc.robot.DriveTrain;
 import frc.robot.SensorInputs;
 
-public class AutonomousActionMoveAndCapture extends AutonomousAction {
+public class AutonomousActionMoveAndCaptureSlow extends AutonomousAction {
     private double startRightPosition; 
     private double startLeftPosition;
     private double endRightPosition;
@@ -16,9 +14,8 @@ public class AutonomousActionMoveAndCapture extends AutonomousAction {
     private double rotationsToTravel;
     private double firstQuarterPositionOffset;
     private double lastQuarterPositionOffset;
-    private int noMovementCycleCounts = 0;
-    private double lastPosition;
-    public AutonomousActionMoveAndCapture(double inchesToTravel)
+
+    public AutonomousActionMoveAndCaptureSlow(double inchesToTravel)
     {
         rotationsToTravel = inchesToTravel * 12.75 / (Math.PI * 6);
     }
@@ -27,7 +24,7 @@ public class AutonomousActionMoveAndCapture extends AutonomousAction {
     public void Initialize(DriveTrain driveTrain, Components components, SensorInputs sensors) {
         startRightPosition = driveTrain.getFrontRightPosition();
         startLeftPosition = driveTrain.getFrontLeftPosition();
-        lastPosition = startLeftPosition;
+        
         firstQuarterPositionOffset = rotationsToTravel / 4;
         lastQuarterPositionOffset = firstQuarterPositionOffset * 3;
         SmartDashboard.putNumber("Auto Move Back - Start Right Position", startRightPosition);
@@ -56,8 +53,7 @@ public class AutonomousActionMoveAndCapture extends AutonomousAction {
         boolean ballCaptured = sensors.lowerBallPresent;
 
         if ( ( leftMoveCompleted && rightMoveCompleted)  ||  
-            ballCaptured || 
-            noMovementCycleCounts > 100)
+            ballCaptured)
         {
             SmartDashboard.putBoolean("DB/LED 0", true);
             return true;
@@ -74,34 +70,24 @@ public class AutonomousActionMoveAndCapture extends AutonomousAction {
         if ( currentOffsetFromStart <= firstQuarterPositionOffset)
         {
             SmartDashboard.putBoolean("DB/LED 1", true);
-            driveSpeed = currentOffsetFromStart / (firstQuarterPositionOffset) / 2 + .25; 
+            driveSpeed = currentOffsetFromStart / (firstQuarterPositionOffset) / 4 + .25; 
         }
         if (currentOffsetFromStart >= lastQuarterPositionOffset)
         {
             SmartDashboard.putBoolean("DB/LED 3", true);
-            driveSpeed = ((rotationsToTravel - currentOffsetFromStart) / (firstQuarterPositionOffset) / 2 + .25); 
-            if (lastPosition != currentFrontLeftPosition)
-            {
-                lastPosition = currentFrontLeftPosition;
-                noMovementCycleCounts = 0;
-            }
-            else
-            {
-                noMovementCycleCounts++;
-            }
+            driveSpeed = ((rotationsToTravel - currentOffsetFromStart) / (firstQuarterPositionOffset) / 4 + .25); 
         }
         if ( (currentOffsetFromStart > firstQuarterPositionOffset) && 
         (currentOffsetFromStart < lastQuarterPositionOffset) )
         {
             SmartDashboard.putBoolean("DB/LED 2", true);
-            driveSpeed = .75;
+            driveSpeed = .5;
         }
 
-        if (currentOffsetFromStart > ( firstQuarterPositionOffset ) )
+        if (currentOffsetFromStart > ( firstQuarterPositionOffset) )
         {
             components.intakeArmControl.set(true); 
-            components.intakeRollerMotor.set(-1.0);
-            components.intakeBeltMotor.set(ControlMode.PercentOutput, 0.4);
+            components.intakeRollerMotor.set(-1.0);    
         }
         else
         {
@@ -120,5 +106,5 @@ public class AutonomousActionMoveAndCapture extends AutonomousAction {
         components.intakeRollerMotor.set(0.0);
         driveTrain.arcadeDrive(0.0, 0.0);    
     }
-
+    
 }

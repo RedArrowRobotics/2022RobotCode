@@ -32,9 +32,10 @@ public class AutononmousActionShootAdaptiveFromCapturePoint extends AutonomousAc
         components.compressor.disable();
         driveTrain.arcadeDrive(0.0, 0.0);
         double targetVelocity = 0;
-        
         if (!shotInProgress)
         {
+            sensors.readSensors();
+            sensors.readSensors();
             TargetVelocity = speedCalculator.variableTarget(sensors.alternateDistanceToTarget);
             targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
             SmartDashboard.putNumber("Distance at calculation", sensors.alternateDistanceToTarget);

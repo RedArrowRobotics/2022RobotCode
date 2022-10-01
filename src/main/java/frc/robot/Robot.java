@@ -7,13 +7,14 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+//import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Autonomous.AutonomousAction;
 import frc.robot.Autonomous.AutonomousActionDoNothing;
 import frc.robot.Autonomous.AutonomousActionMoveAndCapture;
+import frc.robot.Autonomous.AutonomousActionMoveAndCaptureSlow;
 import frc.robot.Autonomous.AutonomousActionMoveBackward;
 import frc.robot.Autonomous.AutonomousActionCaptureBall;
 import frc.robot.Autonomous.AutonomousActionShootBallsFromCapturePoint;
@@ -44,6 +45,8 @@ public class Robot extends TimedRobot {
   private final String kAutoModeNull = "Do Nothing";
   private final String kAutoModeMoveBackward = "Move";
   private final String kAutoModeMoveBackAndGetBallThenShoot = "Move & Get Ball, Fixed Shot";
+  private final String kAutoModeMoveBackAndGetBallThenRangedShoot = "Move & Get Ball, Ranged Shot";
+  private final String kAutoModeMoveBackSlowAndGetBallThenShoot = "Move Slow & Get Ball, Fixed Shot";
   private final String kAutoModeMoveBackwardAdaptiveShot = "Move, Ranged Shot";
   private final String kAutoModeCaptureBall = "Move, Get Ball";
   private final String kAutoModeCaptureBallAndShoot = "Move, Get Ball, Fixed Shot";
@@ -51,7 +54,7 @@ public class Robot extends TimedRobot {
   private final String kAutoModeCaptureSideBallAndShoot = "Wall Ball - Move, Get Ball, Fixed Shot";
   private ArrayList<AutonomousAction> autonomousSequence; 
 
-  private SendableChooser<String> auto_chooser = new SendableChooser<String>();
+  //private SendableChooser<String> auto_chooser = new SendableChooser<String>();
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -68,17 +71,18 @@ public class Robot extends TimedRobot {
     //driveFrontRight.setInverted(true);
     //driveFrontLeft.setInverted(true);
     componentsControl = new ComponentsControlV6();
-    /*SmartDashboard.putStringArray("Auto List", 
+    SmartDashboard.putStringArray("Auto List", 
       new String[]{kAutoModeNull, 
         kAutoModeMoveBackward,
         kAutoModeMoveBackAndGetBallThenShoot,
+        kAutoModeMoveBackAndGetBallThenRangedShoot,
         kAutoModeMoveBackwardAdaptiveShot, 
         kAutoModeCaptureBall, 
         kAutoModeCaptureBallAndShoot,
         kAutoModeCaptureBallAndAdaptiveShoot,
-        kAutoModeCaptureSideBallAndShoot});*/
+        kAutoModeMoveBackSlowAndGetBallThenShoot});
 
-    auto_chooser.addOption(kAutoModeNull, kAutoModeNull);
+    /*auto_chooser.addOption(kAutoModeNull, kAutoModeNull);
     auto_chooser.addOption(kAutoModeMoveBackward, kAutoModeMoveBackward);
     auto_chooser.addOption(kAutoModeMoveBackAndGetBallThenShoot, kAutoModeMoveBackAndGetBallThenShoot);
     auto_chooser.addOption(kAutoModeMoveBackwardAdaptiveShot, kAutoModeMoveBackwardAdaptiveShot);
@@ -88,8 +92,8 @@ public class Robot extends TimedRobot {
     auto_chooser.addOption(kAutoModeCaptureSideBallAndShoot, kAutoModeCaptureSideBallAndShoot);
     auto_chooser.setDefaultOption(kAutoModeNull, kAutoModeNull);
 
-    //shuffleBoardSetup.AutoTab(auto_chooser);
-    SmartDashboard.putData(auto_chooser);
+    shuffleBoardSetup.AutoTab(auto_chooser);*/
+    //SmartDashboard.putData(auto_chooser);
   }
 
   /**
@@ -117,14 +121,22 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     autonomousSequence = new ArrayList<AutonomousAction>();
-    //m_autoSelected = SmartDashboard.getString("Auto Selector", kAutoModeNull);
-    m_autoSelected = auto_chooser.getSelected();
+    m_autoSelected = SmartDashboard.getString("Auto Selector", kAutoModeNull);
+    //m_autoSelected = auto_chooser.getSelected();
     switch (m_autoSelected) {
       case kAutoModeMoveBackward:
-        autonomousSequence.add(new AutonomousActionMoveBackward(84));
+        autonomousSequence.add(new AutonomousActionMoveBackward(72));
         break;
       case kAutoModeMoveBackAndGetBallThenShoot:
         autonomousSequence.add(new AutonomousActionMoveAndCapture(96));  
+        autonomousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
+        break;
+      case kAutoModeMoveBackAndGetBallThenRangedShoot:
+        autonomousSequence.add(new AutonomousActionMoveAndCapture(96));  
+        autonomousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
+        break;
+      case kAutoModeMoveBackSlowAndGetBallThenShoot:
+        autonomousSequence.add(new AutonomousActionMoveAndCaptureSlow(84));  
         autonomousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
         break;
       case kAutoModeMoveBackwardAdaptiveShot:
@@ -160,6 +172,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    
     if (autonomousSequence.size() > 0)
     {
       sensorInputs.readSensors();

@@ -6,10 +6,10 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SensorInputs {
-    private final int lowerIntakeSensorDioId = 1;
-    private final int upperIntakeSensorDioId = 2;
-    private final int firstClawSensorDioId = 3;
-    private final int secondClawSensorDioId = 4;
+    private final int lowerIntakeSensorDioId = 3;
+    private final int upperIntakeSensorDioId = 4;
+    private final int firstClawSensorDioId = 1;
+    private final int secondClawSensorDioId = 2;
 
     private DigitalInput lowerIntakeSensor = new DigitalInput(lowerIntakeSensorDioId);
     private DigitalInput upperIntakeSensor = new DigitalInput(upperIntakeSensorDioId);
