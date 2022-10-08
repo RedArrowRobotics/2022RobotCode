@@ -37,7 +37,7 @@ public class AutononmousActionShootAdaptiveFromCapturePoint extends AutonomousAc
             sensors.readSensors();
             sensors.readSensors();
             TargetVelocity = speedCalculator.variableTarget(sensors.alternateDistanceToTarget);
-            targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
+            targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity)+150;
             SmartDashboard.putNumber("Distance at calculation", sensors.alternateDistanceToTarget);
 
             components.shooterMotorPIDController.setP(0.0003); //0.00008 | 0.0004 | 0.0003
@@ -60,10 +60,10 @@ public class AutononmousActionShootAdaptiveFromCapturePoint extends AutonomousAc
             SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(TargetVelocity));
             SmartDashboard.putNumber("Calculated Shooter RPM", TargetVelocity);
 
-            double targetVelocityTolerance = 50;
+            double targetVelocityTolerance = 83;
             int cycleCountThreshold = 10;
-            if ( (motorVelocity >= TargetVelocity - targetVelocityTolerance) && 
-            (motorVelocity <= TargetVelocity + targetVelocityTolerance) )
+            if ( (motorVelocity >= targetVelocity - targetVelocityTolerance) && 
+            (motorVelocity <= targetVelocity + targetVelocityTolerance) )
             {
                 if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
                 {

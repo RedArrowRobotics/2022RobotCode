@@ -18,6 +18,9 @@ public class ComponentsControlV6 extends ComponentsControl {
         Double transferBeltMotorPower = 0.0;
         Double climbBarRotationMotorPower = 0.0;
         SpeedCalculator speedCalculator = new SpeedCalculator();
+        double targetVelocityTolerance = 83; //70
+        int cycleCountThreshold = 10;
+        double compensatorForMechanicalChange = 150;
 
         if (controlInputs.runIntake)
         {
@@ -67,7 +70,7 @@ public class ComponentsControlV6 extends ComponentsControl {
             //final double lowShotTargetVelocity = 2300;
             final double highShotTargetVelocity = 5800;
             double targetVelocity2 = 0;
-            targetVelocity = highShotTargetVelocity+speedCalculator.differenceInSpeed(highShotTargetVelocity);
+            targetVelocity = highShotTargetVelocity+speedCalculator.differenceInSpeed(highShotTargetVelocity)+compensatorForMechanicalChange;
             targetVelocity2 = highShotTargetVelocity;
             
             if (!shotInProgress)
@@ -93,10 +96,8 @@ public class ComponentsControlV6 extends ComponentsControl {
                 SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(targetVelocity2));
                 SmartDashboard.putNumber("Calculated Shooter RPM", targetVelocity2);
 
-                double targetVelocityTolerance = 70;
-                int cycleCountThreshold = 10;
-                if ( (motorVelocity >= targetVelocity2 - targetVelocityTolerance) && 
-                (motorVelocity <= targetVelocity2 + targetVelocityTolerance) )
+                if ( (motorVelocity >= targetVelocity - targetVelocityTolerance) && 
+                (motorVelocity <= targetVelocity + targetVelocityTolerance) )
                 {
                     if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
                     {
@@ -114,6 +115,7 @@ public class ComponentsControlV6 extends ComponentsControl {
                     SmartDashboard.putBoolean("DB/LED 0", true);
                     shooterVelWithinToleranceCycleCount = 0;
                 }
+                SmartDashboard.putString("Shooter Cycle Count", "High: "+shooterVelWithinToleranceCycleCount);
             }
             if (!sensorInputs.upperBallPresent)
             {
@@ -182,7 +184,7 @@ public class ComponentsControlV6 extends ComponentsControl {
                 if (!shotInProgress)
                 {
                     TargetVelocity = speedCalculator.variableTarget(sensorInputs.alternateDistanceToTarget);
-                    targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity);
+                    targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity)+compensatorForMechanicalChange;
                     SmartDashboard.putNumber("Distance at calculation", sensorInputs.alternateDistanceToTarget);
 
                     components.shooterMotorPIDController.setP(0.0003); //0.00008 | 0.0004 | 0.0003
@@ -206,10 +208,8 @@ public class ComponentsControlV6 extends ComponentsControl {
                     SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(TargetVelocity));
                     SmartDashboard.putNumber("Calculated Shooter RPM", TargetVelocity);
 
-                    double targetVelocityTolerance = 70;
-                    int cycleCountThreshold = 10;
-                    if ( (motorVelocity >= TargetVelocity - targetVelocityTolerance) && 
-                    (motorVelocity <= TargetVelocity + targetVelocityTolerance) )
+                    if ( (motorVelocity >= targetVelocity - targetVelocityTolerance) && 
+                    (motorVelocity <= targetVelocity + targetVelocityTolerance) )
                     {
                         if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
                         {
@@ -227,6 +227,7 @@ public class ComponentsControlV6 extends ComponentsControl {
                         SmartDashboard.putBoolean("DB/LED 0", true);
                         shooterVelWithinToleranceCycleCount = 0;
                     }
+                    SmartDashboard.putString("Shooter Cycle Count", "Adaptive: "+shooterVelWithinToleranceCycleCount);
                 }
             }
             if (!sensorInputs.upperBallPresent)

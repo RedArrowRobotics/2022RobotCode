@@ -34,7 +34,7 @@ public class AutonomousActionShootBallsFromCapturePoint extends AutonomousAction
         
         final double highShotTargetVelocity = 5850;
             double targetVelocity2 = 0;
-            targetVelocity = highShotTargetVelocity+speedCalculator.differenceInSpeed(highShotTargetVelocity);
+            targetVelocity = highShotTargetVelocity+speedCalculator.differenceInSpeed(highShotTargetVelocity)+100;
             targetVelocity2 = highShotTargetVelocity;
                     
             if (!shotInProgress)
@@ -60,10 +60,10 @@ public class AutonomousActionShootBallsFromCapturePoint extends AutonomousAction
                 SmartDashboard.putNumber("Difference In Speed", speedCalculator.differenceInSpeed(targetVelocity2));
                 SmartDashboard.putNumber("Calculated Shooter RPM", targetVelocity2);
 
-                double targetVelocityTolerance = 70;
+                double targetVelocityTolerance = 83;
                 int cycleCountThreshold = 10;
-                if ( (motorVelocity >= targetVelocity2 - targetVelocityTolerance) && 
-                (motorVelocity <= targetVelocity2 + targetVelocityTolerance) )
+                if ( (motorVelocity >= targetVelocity - targetVelocityTolerance) && 
+                (motorVelocity <= targetVelocity + targetVelocityTolerance) )
                 {
                     if (shooterVelWithinToleranceCycleCount >= cycleCountThreshold)
                     {
