@@ -21,6 +21,7 @@ public class AutononmousActionShootAdaptiveFromCapturePoint extends AutonomousAc
     Double upperBeltPowerAccum = 0.0;
     double intakeBeltMotorPower = 0.0;
     double transferBeltMotorPower = 0.0;
+    double targetVelocity = 0;
     
     @Override
     public void Initialize(DriveTrain driveTrain, Components components, SensorInputs sensors) {
@@ -31,15 +32,12 @@ public class AutononmousActionShootAdaptiveFromCapturePoint extends AutonomousAc
     public boolean Execute(DriveTrain driveTrain, Components components, SensorInputs sensors) {
         components.compressor.disable();
         driveTrain.arcadeDrive(0.0, 0.0);
-        double targetVelocity = 0;
         if (!shotInProgress)
         {
-            sensors.readSensors();
-            sensors.readSensors();
             TargetVelocity = speedCalculator.variableTarget(sensors.alternateDistanceToTarget);
             targetVelocity = TargetVelocity+speedCalculator.differenceInSpeed(TargetVelocity)+150;
             SmartDashboard.putNumber("Distance at calculation", sensors.alternateDistanceToTarget);
-
+            
             components.shooterMotorPIDController.setP(0.0003); //0.00008 | 0.0004 | 0.0003
             components.shooterMotorPIDController.setI(0.0000000005); //0.0000000000001 | 0.0000000001 | 0.0000000005
             components.shooterMotorPIDController.setD(0);

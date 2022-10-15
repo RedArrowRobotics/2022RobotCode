@@ -10,6 +10,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Autonomous.AutonomousAction;
 import frc.robot.Autonomous.AutonomousActionDoNothing;
@@ -18,6 +19,7 @@ import frc.robot.Autonomous.AutonomousActionMoveAndCaptureSlow;
 import frc.robot.Autonomous.AutonomousActionMoveBackward;
 import frc.robot.Autonomous.AutonomousActionCaptureBall;
 import frc.robot.Autonomous.AutonomousActionShootBallsFromCapturePoint;
+import frc.robot.Autonomous.AutonomousActionWait;
 //import frc.robot.Autonomous.AutonomousActionStraightMove;
 import frc.robot.Autonomous.AutononmousActionShootAdaptiveFromCapturePoint;
 import frc.robot.ComponentsControl.ComponentsControl;
@@ -120,6 +122,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    DataLogManager.start();
     autonomousSequence = new ArrayList<AutonomousAction>();
     m_autoSelected = SmartDashboard.getString("Auto Selector", kAutoModeNull);
     //m_autoSelected = auto_chooser.getSelected();
@@ -132,7 +135,8 @@ public class Robot extends TimedRobot {
         autonomousSequence.add(new AutonomousActionShootBallsFromCapturePoint());
         break;
       case kAutoModeMoveBackAndGetBallThenRangedShoot:
-        autonomousSequence.add(new AutonomousActionMoveAndCapture(96));  
+        autonomousSequence.add(new AutonomousActionMoveAndCapture(96));
+        autonomousSequence.add(new AutonomousActionWait());  
         autonomousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
         break;
       case kAutoModeMoveBackSlowAndGetBallThenShoot:
@@ -154,7 +158,7 @@ public class Robot extends TimedRobot {
         break;
       case kAutoModeCaptureBallAndAdaptiveShoot:
         autonomousSequence.add(new AutonomousActionMoveBackward(84));
-        autonomousSequence.add(new AutonomousActionCaptureBall());
+        autonomousSequence.add(new AutonomousActionWait());
         autonomousSequence.add(new AutononmousActionShootAdaptiveFromCapturePoint());
         break;
       case kAutoModeCaptureSideBallAndShoot:
