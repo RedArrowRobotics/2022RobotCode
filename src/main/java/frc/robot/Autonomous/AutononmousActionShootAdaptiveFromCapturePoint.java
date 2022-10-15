@@ -83,6 +83,7 @@ public class AutononmousActionShootAdaptiveFromCapturePoint extends AutonomousAc
                 SmartDashboard.putBoolean("DB/LED 0", true);
                 shooterVelWithinToleranceCycleCount = 0;
             }
+            SmartDashboard.putString("Shooter Cycle Count", "Auto Adaptive: "+shooterVelWithinToleranceCycleCount);
         }
         if (!sensors.upperBallPresent)
         {
